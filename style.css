@@ -1,0 +1,95 @@
+.card {
+  background: white;
+  padding: 20px;
+  margin-top: 16px;
+  border-radius: 22px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meal-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.meal-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #888;
+}
+
+.status {
+  font-size: 13px;
+  color: #999;
+}
+
+.photo-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 160px;
+  margin-top: 16px;
+
+  border: 2px dashed #ddd;
+  border-radius: 18px;
+
+  color: #888;
+  text-align: center;
+
+  cursor: pointer;
+}
+
+.photo-box input {
+  display: none;
+}
+
+.photo-icon {
+  font-size: 36px;
+  margin-bottom: 6px;
+}
+
+.photo-content small {
+  display: block;
+  margin-top: 5px;
+  color: #aaa;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px;
+  margin-top: 10px;
+
+  border: 1px solid #eee;
+  border-radius: 15px;
+
+  cursor: pointer;
+}
+
+.task input {
+  width: 20px;
+  height: 20px;
+}
+
+.task-text {
+  flex: 1;
+}
+
+.task-text small {
+  display: block;
+  margin-top: 4px;
+  color: #999;
+  font-size: 12px;
+}
+
+.task strong {
+  color: #7da66d;
+}
