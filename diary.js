@@ -286,7 +286,7 @@ function handleDiaryPhoto(event) {
 }
 
 // ==========================================================
-// 新增日記
+// 💌 新增日記
 // ==========================================================
 
 async function submitDiary() {
@@ -308,7 +308,6 @@ async function submitDiary() {
 
   if (!content) {
     alert("寫一點生活紀錄吧 ❤️");
-
     return;
   }
 
@@ -316,11 +315,14 @@ async function submitDiary() {
 
   if (button) {
     button.disabled = true;
-
     button.textContent = "正在留下日記 ☁️";
   }
 
   try {
+    // ======================================================
+    // ① 處理照片
+    // ======================================================
+
     let photo = null;
 
     if (selectedDiaryPhoto) {
@@ -337,9 +339,19 @@ async function submitDiary() {
       };
     }
 
+    // ======================================================
+    // ② 今天日期
+    // ======================================================
+
     const date = formatDate(new Date());
 
-    const previousTotal = await getDiaryTotalCount();
+    // ======================================================
+    // ③ 送出日記
+    // ======================================================
+
+    if (button) {
+      button.textContent = "正在同步 ☁️";
+    }
 
     await postJSON({
       action: "addDiary",
@@ -354,6 +366,10 @@ async function submitDiary() {
 
       photo: photo,
     });
+
+    // ======================================================
+    // ④ 清空表單
+    // ======================================================
 
     input.value = "";
 
@@ -371,21 +387,33 @@ async function submitDiary() {
 
     resetDiaryPhotoPreview();
 
+    // ======================================================
+    // ⑤ 顯示成功
+    // ======================================================
+
     if (message) {
       message.textContent = "日記已送出 ❤️";
     }
 
-    // 日期索引更新
-    await loadDiaryIndex();
+    // ======================================================
+    // ⑥ 更新日曆、里程碑、今天的日記
+    //
+    // 這些即使失敗，也不能判定日記送出失敗
+    // ======================================================
 
-    // 如果今天正在看，就直接刷新今天
-    await showDiaryForDate(date);
+    try {
+      await loadDiaryIndex();
 
-    const newTotal = previousTotal + 1;
+      await showDiaryForDate(date);
+    } catch (refreshError) {
+      console.error("日記已送出，但畫面更新失敗：", refreshError);
 
-    checkDiaryMilestone(previousTotal, newTotal);
+      if (message) {
+        message.textContent = "日記已送出 ❤️";
+      }
+    }
   } catch (error) {
-    console.error("日記送出失敗", error);
+    console.error("日記送出失敗：", error);
 
     if (message) {
       message.textContent = "日記送出失敗，請再試一次 😢";
@@ -402,6 +430,163 @@ async function submitDiary() {
 }
 
 // ==========================================================
+// ✨ 我們的里程碑
+//
+// 篇數直接使用 Google Sheets 的真實總篇數
+// 兩個人看到的是同一個進度
+// ==========================================================
+
+let diaryTotalCount = 0;
+
+function renderDiaryMilestone() {
+  const calendarCard = document.querySelector(".diary-calendar-card");
+
+  if (!calendarCard) {
+    return;
+  }
+
+  let milestoneCard = document.getElementById("diary-milestone-card");
+
+  if (!milestoneCard) {
+    milestoneCard = document.createElement("section");
+
+    milestoneCard.id = "diary-milestone-card";
+
+    milestoneCard.className = "card diary-milestone-card";
+
+    calendarCard.parentNode.insertBefore(milestoneCard, calendarCard);
+  }
+
+  const milestones = DIARY_MILESTONES.slice().sort((a, b) => a.count - b.count);
+
+  // ========================================================
+  // 找目前最高里程碑
+  // ========================================================
+
+  let currentMilestone = null;
+
+  for (const milestone of milestones) {
+    if (diaryTotalCount >= milestone.count) {
+      currentMilestone = milestone;
+    }
+  }
+
+  // ========================================================
+  // 找下一個里程碑
+  // ========================================================
+
+  const nextMilestone = milestones.find(
+    (milestone) => milestone.count > diaryTotalCount,
+  );
+
+  // ========================================================
+  // 還沒有第一個里程碑
+  // ========================================================
+
+  if (!currentMilestone) {
+    const remaining = nextMilestone ? nextMilestone.count - diaryTotalCount : 0;
+
+    milestoneCard.innerHTML = `
+
+      <div class="diary-milestone-card-header">
+
+        <div class="diary-milestone-icon">
+          🌱
+        </div>
+
+        <div>
+
+          <div class="diary-milestone-card-title">
+            我們的里程碑
+          </div>
+
+          <div class="diary-milestone-card-subtitle">
+            一起把日子慢慢寫下來
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="diary-milestone-progress">
+
+        <strong>
+          ${diaryTotalCount} 篇
+        </strong>
+
+        ${
+          nextMilestone
+            ? `
+              <span>
+                再 ${remaining} 篇，
+                就到 ${nextMilestone.count} 篇 💌
+              </span>
+            `
+            : ""
+        }
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+  // ========================================================
+  // 已經有里程碑
+  // ========================================================
+
+  milestoneCard.innerHTML = `
+
+    <div class="diary-milestone-card-header">
+
+      <div class="diary-milestone-icon">
+        ${currentMilestone.icon}
+      </div>
+
+      <div>
+
+        <div class="diary-milestone-card-title">
+          ${escapeHTML(currentMilestone.title)}
+        </div>
+
+        <div class="diary-milestone-card-subtitle">
+          ${escapeHTML(currentMilestone.text)}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="diary-milestone-progress">
+
+      <strong>
+        ${diaryTotalCount} 篇
+      </strong>
+
+      ${
+        nextMilestone
+          ? `
+            <span>
+              再 ${nextMilestone.count - diaryTotalCount} 篇，
+              就到 ${nextMilestone.count} 篇 💌
+            </span>
+          `
+          : `
+            <span>
+              我們還在繼續寫下去 ❤️
+            </span>
+          `
+      }
+
+    </div>
+
+  `;
+}
+
+// ==========================================================
 // 📅 日期索引
 // ==========================================================
 
@@ -411,7 +596,12 @@ async function loadDiaryIndex() {
 
     diaryDates = Array.isArray(data.diaryDates) ? data.diaryDates : [];
 
+    // ⭐ Google Sheets 真實總篇數
+    diaryTotalCount = Number(data.total) || 0;
+
     renderCalendar();
+
+    renderDiaryMilestone();
 
     return true;
   } catch (error) {
@@ -419,7 +609,11 @@ async function loadDiaryIndex() {
 
     diaryDates = [];
 
+    diaryTotalCount = 0;
+
     renderCalendar();
+
+    renderDiaryMilestone();
 
     return false;
   }
@@ -827,17 +1021,27 @@ function createDiaryElement(diary) {
 
     <div class="diary-entry-header">
 
-      <div class="diary-author">
+<div class="diary-author">
 
-        <span>
-          ${author.icon}
+  <span>
+    ${author.icon}
+  </span>
+
+  <span>
+    ${author.name}
+  </span>
+
+  ${
+    diary.mood
+      ? `
+        <span class="diary-author-mood">
+          ${diary.mood}
         </span>
+      `
+      : ""
+  }
 
-        <span>
-          ${author.name}
-        </span>
-
-      </div>
+</div>
 
 
       <div class="diary-date">
@@ -849,26 +1053,9 @@ function createDiaryElement(diary) {
     </div>
 
 
-    <div class="diary-content">
-
-      ${escapeHTML(diary.content || "")}
-
-    </div>
-
-
-    ${
-      diary.mood
-        ? `
-
-          <div class="diary-entry-mood">
-
-            ${escapeHTML(diary.mood)}
-
-          </div>
-
-        `
-        : ""
-    }
+    <div class="diary-content">${escapeHTML(
+      String(diary.content || "").trim(),
+    )}</div>
 
 
     ${photoHTML}
@@ -1098,96 +1285,6 @@ async function submitReply(diaryId, input) {
 
     alert("回覆送出失敗，請再試一次 😢");
   }
-}
-
-// ==========================================================
-// ✨ 里程碑
-// ==========================================================
-
-async function getDiaryTotalCount() {
-  try {
-    // 目前 index API 只需要日期，
-    // 所以這裡用所有日期的日記數量無法精確取得篇數。
-    //
-    // 因此先從已知資料估算。
-    //
-    // 寫入成功後 +1。
-    //
-    // 如果之後需要完全精確的總篇數，
-    // 可以再新增 diaryStats API。
-
-    return Number(localStorage.getItem("diary-total-count") || 0);
-  } catch (error) {
-    return 0;
-  }
-}
-
-function checkDiaryMilestone(previousTotal, newTotal) {
-  const milestone = DIARY_MILESTONES.find(
-    (item) => item.count > previousTotal && item.count <= newTotal,
-  );
-
-  if (!milestone) {
-    saveDiaryTotalCount(newTotal);
-
-    return;
-  }
-
-  saveDiaryTotalCount(newTotal);
-
-  showDiaryMilestone(milestone);
-}
-
-function saveDiaryTotalCount(count) {
-  localStorage.setItem("diary-total-count", String(count));
-}
-
-function showDiaryMilestone(milestone) {
-  const overlay = document.createElement("div");
-
-  overlay.className = "diary-milestone-overlay";
-
-  overlay.innerHTML = `
-
-    <div class="diary-milestone">
-
-      <div class="diary-milestone-icon">
-
-        ${milestone.icon}
-
-      </div>
-
-
-      <div class="diary-milestone-title">
-
-        ${escapeHTML(milestone.title)}
-
-      </div>
-
-
-      <div class="diary-milestone-text">
-
-        ${escapeHTML(milestone.text)}
-
-      </div>
-
-    </div>
-
-  `;
-
-  document.body.appendChild(overlay);
-
-  requestAnimationFrame(() => {
-    overlay.classList.add("show");
-  });
-
-  setTimeout(() => {
-    overlay.classList.remove("show");
-
-    setTimeout(() => {
-      overlay.remove();
-    }, 350);
-  }, 2400);
 }
 
 // ==========================================================
