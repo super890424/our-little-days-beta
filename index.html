@@ -12,6 +12,16 @@
   <body>
     <main class="container">
       <!-- ====================
+           網站導覽
+      ==================== -->
+
+      <nav class="site-nav">
+        <a href="index.html" class="site-nav-link active"> 🥬 健康寶寶 </a>
+
+        <a href="diary.html" class="site-nav-link"> 💌 交換日記 </a>
+      </nav>
+
+      <!-- ====================
            Header
       ==================== -->
 
@@ -22,7 +32,10 @@
 
         <p>吃蔬菜打卡換願望 ❤️</p>
 
-        <div class="points"><span id="points">0</span> 點</div>
+        <div class="points">
+          <span id="points">0</span>
+          點
+        </div>
 
         <div class="progress-bg">
           <div id="progress" class="progress"></div>
@@ -119,7 +132,9 @@
           </div>
         </div>
 
-        <!-- 標題 -->
+        <!-- ====================
+             餐點標題
+        ==================== -->
 
         <div class="meal-header">
           <div>
@@ -238,13 +253,17 @@
           </label>
         </div>
 
-        <!-- 本餐得分 -->
+        <!-- ====================
+             本餐得分
+        ==================== -->
 
         <div id="meal-points-preview" class="meal-points-preview">
           這餐可以獲得 +0 分 🌱
         </div>
 
-        <!-- 完成 -->
+        <!-- ====================
+             完成
+        ==================== -->
 
         <button id="complete-meal" class="complete-button" type="button">
           完成這餐 🥬
@@ -294,10 +313,6 @@
           這一張願望券<br />
           是妳為自己努力換來的。❤️
         </p>
-
-        <button id="start-wish-button" class="completion-button" type="button">
-          💌 寫下我的願望
-        </button>
       </div>
     </div>
 

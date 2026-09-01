@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>交換日記 💌</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <main class="container diary-page">
+      <!-- ====================
+           導覽
+      ==================== -->
+
+      <nav class="site-nav">
+        <a href="index.html" class="site-nav-link"> 🥬 健康寶寶 </a>
+
+        <a href="diary.html" class="site-nav-link active"> 💌 交換日記 </a>
+      </nav>
+
+      <!-- ====================
+           Header
+      ==================== -->
+
+      <section class="header diary-header">
+        <div>💌 我們的交換日記</div>
+
+        <h1>留下一點今天</h1>
+
+        <p>想記什麼就記什麼，沒有作業 ❤️</p>
+      </section>
+
+      <!-- ====================
+           身份
+      ==================== -->
+
+      <section class="card diary-identity-card">
+        <div class="diary-section-label">今天是誰在寫？</div>
+
+        <div class="identity-switcher">
+          <button type="button" class="identity-button" data-author="BIG">
+            🐕 大朋友
+          </button>
+
+          <button type="button" class="identity-button" data-author="SMALL">
+            💃 小朋友
+          </button>
+        </div>
+
+        <div class="diary-current-author">
+          目前身份：
+          <strong id="current-diary-author"> 💃 小朋友 </strong>
+        </div>
+      </section>
+
+      <!-- ====================
+           寫日記
+      ==================== -->
+
+      <section class="card diary-write-card">
+        <div class="meal-title">
+          <span id="diary-write-title"> ✍️ 留下一篇日記 </span>
+        </div>
+
+        <div class="meal-subtitle">想說什麼、想記住什麼，都可以。</div>
+
+        <!-- 日記內容 -->
+
+        <textarea
+          id="diary-input"
+          class="diary-input"
+          maxlength="1000"
+          placeholder="今天發生了什麼？&#10;&#10;想寫給自己、想分享給對方，甚至只是記下一個瞬間，都可以。"
+        ></textarea>
+
+        <!-- ====================
+             心情
+        ==================== -->
+
+        <div class="diary-mood-section">
+          <div class="diary-field-label">
+            今天的心情
+            <span> （選填） </span>
+          </div>
+
+          <div class="diary-mood-buttons">
+            <button type="button" class="diary-mood-button" data-mood="🥰">
+              🥰
+            </button>
+
+            <button type="button" class="diary-mood-button" data-mood="😊">
+              😊
+            </button>
+
+            <button type="button" class="diary-mood-button" data-mood="😂">
+              😂
+            </button>
+
+            <button type="button" class="diary-mood-button" data-mood="🥹">
+              🥹
+            </button>
+
+            <button type="button" class="diary-mood-button" data-mood="😌">
+              😌
+            </button>
+
+            <button type="button" class="diary-mood-button" data-mood="😴">
+              😴
+            </button>
+          </div>
+        </div>
+
+        <!-- ====================
+             照片
+        ==================== -->
+
+        <label class="diary-photo-box" for="diary-photo">
+          <div id="diary-photo-preview" class="diary-photo-preview">
+            <div class="photo-content">
+              <div class="photo-icon">📷</div>
+
+              <div>留下一張照片</div>
+
+              <small> 照片不是必要的 ❤️ </small>
+            </div>
+          </div>
+        </label>
+
+        <input
+          id="diary-photo"
+          class="photo-input"
+          type="file"
+          accept="image/*"
+        />
+
+        <!-- ====================
+             完成
+        ==================== -->
+
+        <button id="save-diary-button" class="complete-button" type="button">
+          留下這篇日記 💌
+        </button>
+
+        <div id="diary-message" class="diary-message"></div>
+      </section>
+
+      <!-- ====================
+           📅 日曆
+      ==================== -->
+
+      <section class="card diary-calendar-card">
+        <div class="diary-calendar-header">
+          <button
+            id="diary-prev-month"
+            class="diary-calendar-nav"
+            type="button"
+            aria-label="上一個月"
+          >
+            ‹
+          </button>
+
+          <div id="diary-calendar-title" class="diary-calendar-title">
+            2026 年 9 月
+          </div>
+
+          <button
+            id="diary-next-month"
+            class="diary-calendar-nav"
+            type="button"
+            aria-label="下一個月"
+          >
+            ›
+          </button>
+        </div>
+
+        <div id="diary-calendar" class="diary-calendar"></div>
+
+        <div class="diary-calendar-hint">
+          <span class="diary-calendar-dot"></span>
+          有留下日記的日子
+        </div>
+      </section>
+
+      <!-- ====================
+           📖 日記內容
+      ==================== -->
+
+      <section id="diary-history" class="card diary-history-card">
+        <div class="diary-empty">
+          選一個日期，
+          <br />
+          看看那天留下了什麼 ❤️
+        </div>
+      </section>
+
+      <!-- ====================
+           回首頁
+      ==================== -->
+
+      <div class="diary-home-link">
+        <a href="index.html"> ← 回到健康寶寶 </a>
+      </div>
+    </main>
+
+    <!-- ====================
+         JS
+    ==================== -->
+
+    <script src="diary.js"></script>
+  </body>
+</html>
