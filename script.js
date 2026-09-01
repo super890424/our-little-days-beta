@@ -37,6 +37,8 @@ const wishStatus = document.getElementById("wish-status");
 
 const wishResult = document.getElementById("wish-result");
 
+const mealPointsPreview = document.getElementById("meal-points-preview");
+
 // ====================
 // 日期 / 時間
 // ====================
@@ -91,11 +93,98 @@ mealPhoto.addEventListener("change", function () {
 });
 
 // ====================
+// 任務點數計算
+// ====================
+
+function calculateMealPoints() {
+  let points = 0;
+
+  // --------------------
+  // 青菜
+  // --------------------
+
+  const veggieLevel = document.querySelector(
+    'input[name="veggie-level"]:checked',
+  );
+
+  if (veggieLevel) {
+    if (veggieLevel.value === "1") {
+      points += 1;
+    }
+
+    if (veggieLevel.value === "2") {
+      points += 2;
+    }
+  }
+
+  // --------------------
+  // 第一口
+  // --------------------
+
+  const firstBiteTask = document.getElementById("first-bite-task");
+
+  if (firstBiteTask && firstBiteTask.checked) {
+    points += 1;
+  }
+
+  // --------------------
+  // 水果
+  // --------------------
+
+  const fruitTask = document.getElementById("fruit-task");
+
+  if (fruitTask && fruitTask.checked) {
+    points += 1;
+  }
+
+  // --------------------
+  // 有氧
+  // --------------------
+
+  const exerciseTask = document.getElementById("exercise-task");
+
+  if (exerciseTask && exerciseTask.checked) {
+    points += 2;
+  }
+
+  return points;
+}
+
+// ====================
+// 更新本餐分數
+// ====================
+
+function updateMealPointsPreview() {
+  if (!mealPointsPreview) {
+    return;
+  }
+
+  const points = calculateMealPoints();
+
+  mealPointsPreview.textContent = `這餐可以獲得 +${points} 分 🌱`;
+}
+
+// ====================
+// 綁定任務事件
+// ====================
+
+document
+  .querySelectorAll(
+    'input[name="veggie-level"], #first-bite-task, #fruit-task, #exercise-task',
+  )
+  .forEach(function (input) {
+    input.addEventListener("change", updateMealPointsPreview);
+  });
+
+// ====================
 // 完成這餐
 // ====================
 
 completeButton.addEventListener("click", async function () {
+  // --------------------
   // 防止重複點擊
+  // --------------------
+
   if (challengeCompleted || isSubmitting) {
     return;
   }
@@ -106,42 +195,18 @@ completeButton.addEventListener("click", async function () {
 
   completeButton.textContent = "準備中...";
 
-  const veggieTask = document.getElementById("veggie-task");
-
-  const firstBiteTask = document.getElementById("first-bite-task");
-
   // ====================
   // 計算點數
   // ====================
 
-  let mealPoints = 0;
-
-  if (veggieTask.checked) {
-    mealPoints += 2;
-  }
-
-  if (firstBiteTask.checked) {
-    mealPoints += 1;
-  }
-
-  // ====================
-  // 必須有照片
-  // ====================
-
-  if (!selectedPhoto) {
-    alert("先拍下這餐，才能完成打卡喔 📸🥬");
-
-    resetSubmitState();
-
-    return;
-  }
+  const mealPoints = calculateMealPoints();
 
   // ====================
   // 至少一個任務
   // ====================
 
   if (mealPoints === 0) {
-    alert("至少完成一個吃菜任務吧 🥬");
+    alert("至少完成一個小任務吧 🥬");
 
     resetSubmitState();
 
@@ -187,6 +252,20 @@ completeButton.addEventListener("click", async function () {
   }
 
   // ====================
+  // 任務狀態
+  // ====================
+
+  const veggieLevel = document.querySelector(
+    'input[name="veggie-level"]:checked',
+  );
+
+  const firstBiteTask = document.getElementById("first-bite-task");
+
+  const fruitTask = document.getElementById("fruit-task");
+
+  const exerciseTask = document.getElementById("exercise-task");
+
+  // ====================
   // 建立餐點
   // ====================
 
@@ -199,9 +278,15 @@ completeButton.addEventListener("click", async function () {
 
     points: mealPoints,
 
-    veggie: veggieTask.checked,
+    veggie: veggieLevel !== null,
 
-    firstBite: firstBiteTask.checked,
+    veggieLevel: veggieLevel ? Number(veggieLevel.value) : 0,
+
+    firstBite: firstBiteTask ? firstBiteTask.checked : false,
+
+    fruit: fruitTask ? fruitTask.checked : false,
+
+    exercise: exerciseTask ? exerciseTask.checked : false,
 
     photoUrl: "",
   };
@@ -223,8 +308,6 @@ completeButton.addEventListener("click", async function () {
   // ====================
 
   completeButton.textContent = "正在更新日記 ☁️";
-
-  await sleep(1200);
 
   const cloudSuccess = await loadCloudData();
 
@@ -278,19 +361,11 @@ completeButton.addEventListener("click", async function () {
 function resetSubmitState() {
   isSubmitting = false;
 
-  completeButton.disabled = false;
+  completeButton.disabled = challengeCompleted;
 
-  completeButton.textContent = "完成這餐";
-}
-
-// ====================
-// 延遲
-// ====================
-
-function sleep(milliseconds) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, milliseconds);
-  });
+  completeButton.textContent = challengeCompleted
+    ? "挑戰已完成 🎓"
+    : "完成這餐 🥬";
 }
 
 // ====================
@@ -312,12 +387,6 @@ function updatePoints() {
 
   if (totalPoints >= GOAL) {
     progressText.textContent = "🎉 健康寶寶挑戰完成！";
-
-    if (!challengeCompleted) {
-      challengeCompleted = true;
-
-      showCompletionScreen();
-    }
   } else {
     progressText.textContent = `距離願望券還有 ${GOAL - totalPoints} 點`;
   }
@@ -342,7 +411,7 @@ function updateChallengeUI() {
     completeButton.disabled = isSubmitting;
 
     if (!isSubmitting) {
-      completeButton.textContent = "完成這餐";
+      completeButton.textContent = "完成這餐 🥬";
     }
 
     if (wishStatus) {
@@ -352,7 +421,7 @@ function updateChallengeUI() {
 }
 
 // ====================
-// 完成動畫 / 願望券視窗
+// 完成動畫 / 願望券
 // ====================
 
 function showCompletionScreen() {
@@ -362,23 +431,13 @@ function showCompletionScreen() {
     return;
   }
 
-  // 顯示完成視窗
   overlay.classList.remove("hidden");
-
-  // --------------------
-  // 找到原本完成視窗內容
-  // --------------------
 
   const content = overlay.querySelector(".completion-content");
 
   if (!content) {
     return;
   }
-
-  // --------------------
-  // 直接把完成視窗改成
-  // 「領取願望券」畫面
-  // --------------------
 
   content.innerHTML = `
 
@@ -478,16 +537,11 @@ function showCompletionScreen() {
       <div
         id="save-wish-message"
         class="save-wish-message"
-      >
-      </div>
+      ></div>
 
     </div>
 
   `;
-
-  // --------------------
-  // 綁定儲存按鈕
-  // --------------------
 
   const saveButton = document.getElementById("save-wish-button");
 
@@ -511,10 +565,6 @@ async function saveWishVoucher() {
     return;
   }
 
-  // --------------------
-  // 防止重複點擊
-  // --------------------
-
   if (saveButton) {
     saveButton.disabled = true;
 
@@ -522,7 +572,6 @@ async function saveWishVoucher() {
   }
 
   try {
-    // 確保 html2canvas 已載入
     if (typeof html2canvas !== "function") {
       throw new Error("html2canvas 尚未載入");
     }
@@ -539,10 +588,6 @@ async function saveWishVoucher() {
 
     const image = canvas.toDataURL("image/png");
 
-    // --------------------
-    // 建立下載連結
-    // --------------------
-
     const link = document.createElement("a");
 
     link.download = "健康寶寶願望券.png";
@@ -554,10 +599,6 @@ async function saveWishVoucher() {
     link.click();
 
     link.remove();
-
-    // --------------------
-    // 成功
-    // --------------------
 
     if (message) {
       message.textContent = "願望券已經幫妳準備好了 🎟️❤️";
@@ -631,6 +672,28 @@ function renderHistory() {
           `;
       }
 
+      let taskIcons = "";
+
+      if (meal.veggieLevel === 1) {
+        taskIcons += "🥬";
+      }
+
+      if (meal.veggieLevel === 2) {
+        taskIcons += "🥬🥬";
+      }
+
+      if (meal.firstBite) {
+        taskIcons += "✨";
+      }
+
+      if (meal.fruit) {
+        taskIcons += "🍎";
+      }
+
+      if (meal.exercise) {
+        taskIcons += "🏃‍♀️";
+      }
+
       item.innerHTML = `
 
           <div class="history-item-header">
@@ -646,15 +709,15 @@ function renderHistory() {
 
           </div>
 
+
           ${photoHTML}
+
 
           <div class="history-points">
 
             +${meal.points} 點
 
-            ${meal.veggie ? "🥬" : ""}
-
-            ${meal.firstBite ? "✨" : ""}
+            ${taskIcons}
 
           </div>
 
@@ -669,16 +732,42 @@ function renderHistory() {
 // ====================
 
 function resetMealForm() {
-  document.getElementById("veggie-task").checked = false;
+  // 青菜份量
+  document
+    .querySelectorAll('input[name="veggie-level"]')
+    .forEach(function (radio) {
+      radio.checked = false;
+    });
 
-  document.getElementById("first-bite-task").checked = false;
+  // 第一口
+  const firstBiteTask = document.getElementById("first-bite-task");
 
+  if (firstBiteTask) {
+    firstBiteTask.checked = false;
+  }
+
+  // 水果
+  const fruitTask = document.getElementById("fruit-task");
+
+  if (fruitTask) {
+    fruitTask.checked = false;
+  }
+
+  // 有氧
+  const exerciseTask = document.getElementById("exercise-task");
+
+  if (exerciseTask) {
+    exerciseTask.checked = false;
+  }
+
+  // 餐別
   document
     .querySelectorAll('input[name="meal-type"]')
     .forEach(function (radio) {
       radio.checked = false;
     });
 
+  // 照片
   selectedPhoto = null;
 
   mealPhoto.value = "";
@@ -694,24 +783,28 @@ function resetMealForm() {
       </div>
 
       <div>
-        拍下這餐
+        留下這餐的照片
       </div>
 
       <small>
-        有蔬菜就可以打卡！
+        照片不是必要的，有拍就留下來 ❤️
       </small>
 
     </div>
 
   `;
 
+  // 本餐分數
+  updateMealPointsPreview();
+
+  // 重設時間
   setCurrentDateTime();
 
   completeButton.disabled = challengeCompleted;
 
   completeButton.textContent = challengeCompleted
     ? "挑戰已完成 🎓"
-    : "完成這餐";
+    : "完成這餐 🥬";
 }
 
 // ====================
@@ -748,7 +841,13 @@ async function loadCloudData() {
 
         veggie: meal.veggie === true || meal.veggie === "TRUE",
 
+        veggieLevel: Number(meal.veggieLevel || 0),
+
         firstBite: meal.firstBite === true || meal.firstBite === "TRUE",
+
+        fruit: meal.fruit === true || meal.fruit === "TRUE",
+
+        exercise: meal.exercise === true || meal.exercise === "TRUE",
 
         photoUrl: meal.photoUrl || "",
       };
@@ -761,6 +860,8 @@ async function loadCloudData() {
     renderHistory();
 
     updatePoints();
+
+    updateMealPointsPreview();
 
     updateChallengeUI();
 
@@ -783,7 +884,7 @@ async function sendMealToCloud(meal) {
     let photoData = null;
 
     // ====================
-    // 照片壓縮
+    // 照片
     // ====================
 
     if (selectedPhoto) {
@@ -824,7 +925,13 @@ async function sendMealToCloud(meal) {
 
         veggie: meal.veggie,
 
+        veggieLevel: meal.veggieLevel,
+
         firstBite: meal.firstBite,
+
+        fruit: meal.fruit,
+
+        exercise: meal.exercise,
 
         points: meal.points,
 
@@ -833,6 +940,9 @@ async function sendMealToCloud(meal) {
     });
 
     console.log("☁️ 餐點已送出");
+
+    // 給 Apps Script 一點時間寫入
+    await sleep(800);
 
     return true;
   } catch (error) {
@@ -945,11 +1055,23 @@ async function markChallengeCompleted() {
 }
 
 // ====================
+// 延遲
+// ====================
+
+function sleep(milliseconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, milliseconds);
+  });
+}
+
+// ====================
 // 初始化
 // ====================
 
 async function initializeApp() {
   setCurrentDateTime();
+
+  updateMealPointsPreview();
 
   await loadCloudData();
 }

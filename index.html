@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>健康寶寶吃青菜挑戰 🥬</title>
+
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
     <main class="container">
+      <!-- ====================
+           Header
+      ==================== -->
+
       <section class="header">
         <div>🥬 健康寶寶挑戰</div>
 
@@ -27,6 +32,11 @@
           距離獲得願望券還有 45 點
         </div>
       </section>
+
+      <!-- ====================
+           願望券
+      ==================== -->
+
       <section class="card wish-card">
         <div class="wish-icon">🎁</div>
 
@@ -53,13 +63,22 @@
 
         <div id="wish-result" class="wish-result hidden"></div>
       </section>
+
+      <!-- ====================
+           新增餐點
+      ==================== -->
+
       <section class="card">
         <div class="meal-info">
+          <!-- 日期 -->
+
           <div class="field">
             <label for="meal-date"> 📅 日期 </label>
 
             <input id="meal-date" type="date" />
           </div>
+
+          <!-- 時間 -->
 
           <div class="field">
             <label for="meal-time"> 🕐 時間 </label>
@@ -67,48 +86,60 @@
             <input id="meal-time" type="time" />
           </div>
 
+          <!-- 餐別 -->
+
           <div class="field">
             <span class="field-label"> 🍽️ 餐別 </span>
 
             <div class="meal-types">
               <label class="meal-type">
                 <input type="radio" name="meal-type" value="早餐" />
+
                 🍳 早餐
               </label>
 
               <label class="meal-type">
                 <input type="radio" name="meal-type" value="午餐" />
+
                 🍱 午餐
               </label>
 
               <label class="meal-type">
                 <input type="radio" name="meal-type" value="晚餐" />
+
                 🍽️ 晚餐
               </label>
 
               <label class="meal-type">
                 <input type="radio" name="meal-type" value="菜菜點心" />
+
                 🥬 菜菜點心
               </label>
             </div>
           </div>
         </div>
+
+        <!-- 標題 -->
+
         <div class="meal-header">
           <div>
             <div class="meal-title">🍽️ 新增一餐</div>
+
             <div class="meal-subtitle">今天這餐有乖乖吃菜嗎？</div>
           </div>
         </div>
 
-        <!-- 拍照區 -->
+        <!-- ====================
+             照片
+        ==================== -->
 
         <label class="photo-box" for="meal-photo">
           <div class="photo-content">
             <div class="photo-icon">📸</div>
 
-            <div>拍下這餐</div>
+            <div>留下這餐的照片</div>
 
-            <small> 有蔬菜就可以打卡！ </small>
+            <small> 照片不是必要的，有拍就留下來 ❤️ </small>
           </div>
         </label>
 
@@ -117,40 +148,115 @@
           class="photo-input"
           type="file"
           accept="image/*"
-          capture="environment"
         />
 
-        <!-- 任務 -->
+        <!-- ====================
+             任務
+        ==================== -->
 
-        <label class="task">
-          <input id="veggie-task" type="checkbox" class="task-checkbox" />
+        <div class="tasks">
+          <!-- 青菜份量 -->
 
-          <div class="task-text">
-            <div>🥬 一拳頭蔬菜</div>
+          <div class="task-group">
+            <div class="task-group-title">🥬 今天吃了多少青菜？</div>
 
-            <small> 大約一個拳頭的份量 </small>
+            <label class="task">
+              <input
+                id="veggie-one"
+                name="veggie-level"
+                type="radio"
+                value="1"
+              />
+
+              <div class="task-text">
+                <strong> 1 個拳頭以上 </strong>
+
+                <small> 有吃青菜就很棒 🌱 </small>
+              </div>
+
+              <strong> +1 </strong>
+            </label>
+
+            <label class="task">
+              <input
+                id="veggie-two"
+                name="veggie-level"
+                type="radio"
+                value="2"
+              />
+
+              <div class="task-text">
+                <strong> 2 個拳頭以上 </strong>
+
+                <small> 今天蔬菜吃得很足夠！ </small>
+              </div>
+
+              <strong> +2 </strong>
+            </label>
           </div>
 
-          <strong> +2 </strong>
-        </label>
+          <!-- 第一口 -->
 
-        <label class="task">
-          <input id="first-bite-task" type="checkbox" class="task-checkbox" />
+          <label class="task">
+            <input id="first-bite-task" type="checkbox" class="task-checkbox" />
 
-          <div class="task-text">
-            <div>✨ 第一口先吃菜</div>
+            <div class="task-text">
+              <strong> ✨ 第一口先吃青菜 </strong>
 
-            <small> 吃其他東西以前，先吃一口菜 </small>
-          </div>
+              <small> 吃其他東西以前，先吃一口菜 </small>
+            </div>
 
-          <strong> +1 </strong>
-        </label>
+            <strong> +1 </strong>
+          </label>
+
+          <!-- 水果 -->
+
+          <label class="task">
+            <input id="fruit-task" type="checkbox" class="task-checkbox" />
+
+            <div class="task-text">
+              <strong> 🍎 吃水果 </strong>
+
+              <small> 今天也補充一點水果 </small>
+            </div>
+
+            <strong> +1 </strong>
+          </label>
+
+          <!-- 有氧 -->
+
+          <label class="task">
+            <input id="exercise-task" type="checkbox" class="task-checkbox" />
+
+            <div class="task-text">
+              <strong> 🏃‍♀️ 走路／其他有氧 15 分鐘以上 </strong>
+
+              <small> 動一動，讓身體也開心一下 </small>
+            </div>
+
+            <strong> +2 </strong>
+          </label>
+        </div>
+
+        <!-- 本餐得分 -->
+
+        <div id="meal-points-preview" class="meal-points-preview">
+          這餐可以獲得 +0 分 🌱
+        </div>
+
+        <!-- 完成 -->
+
         <button id="complete-meal" class="complete-button" type="button">
           完成這餐 🥬
         </button>
 
         <div id="meal-message" class="meal-message"></div>
       </section>
+
+      <!-- ====================
+           吃菜日記
+      ==================== -->
+
       <section class="card history-card">
         <div class="history-header">
           <div>
@@ -167,6 +273,11 @@
         </div>
       </section>
     </main>
+
+    <!-- ====================
+         挑戰完成畫面
+    ==================== -->
+
     <div id="completion-overlay" class="completion-overlay hidden">
       <div class="completion-content">
         <div class="completion-confetti">🥬 ✨ 🎉 ✨ 🥬</div>
@@ -184,12 +295,18 @@
           是妳為自己努力換來的。❤️
         </p>
 
-        <button id="start-wish-button" class="completion-button">
+        <button id="start-wish-button" class="completion-button" type="button">
           💌 寫下我的願望
         </button>
       </div>
     </div>
+
+    <!-- ====================
+         JS
+    ==================== -->
+
     <script src="script.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   </body>
 </html>
