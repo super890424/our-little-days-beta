@@ -2,7 +2,9 @@
    全站基本
 ========================================================= */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -12,6 +14,9 @@ html {
 
 body {
   margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -19,18 +24,26 @@ body {
     "PingFang TC",
     "Microsoft JhengHei",
     sans-serif;
+
   background: #faf8f5;
   color: #333;
 }
 
 button,
 input,
-textarea {
+textarea,
+select {
+  box-sizing: border-box;
+  max-width: 100%;
   font: inherit;
 }
 
 button {
   -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  max-width: 100%;
 }
 
 
@@ -107,7 +120,6 @@ button {
   gap: 8px;
 
   margin-bottom: 20px;
-
   padding: 5px;
 
   background: #f0ece7;
@@ -116,6 +128,7 @@ button {
 
 .main-tab {
   flex: 1;
+  min-width: 0;
 
   border: 0;
   border-radius: 12px;
@@ -145,14 +158,20 @@ button {
   display: none;
 }
 
+.hidden {
+  display: none !important;
+}
+
 
 /* =========================================================
    卡片
 ========================================================= */
 
 .card {
-  margin-bottom: 20px;
+  width: 100%;
+  min-width: 0;
 
+  margin-bottom: 20px;
   padding: 24px;
 
   background: #fff;
@@ -171,11 +190,9 @@ button {
 
 .header {
   margin-bottom: 20px;
-
   padding: 30px 24px;
 
   background: #fff;
-
   border-radius: 24px;
 
   text-align: center;
@@ -195,7 +212,6 @@ button {
   margin: 0;
 
   color: #888;
-
   font-size: 15px;
 }
 
@@ -214,7 +230,6 @@ button {
   overflow: hidden;
 
   background: #eee;
-
   border-radius: 999px;
 }
 
@@ -223,7 +238,6 @@ button {
   height: 100%;
 
   background: #87a878;
-
   border-radius: inherit;
 
   transition: width 0.5s ease;
@@ -233,7 +247,6 @@ button {
   margin-top: 10px;
 
   color: #888;
-
   font-size: 13px;
 }
 
@@ -261,7 +274,6 @@ button {
   margin-top: 8px;
 
   color: #888;
-
   font-size: 14px;
 }
 
@@ -295,18 +307,14 @@ button {
 
 .wish-result {
   margin-top: 18px;
-
   padding: 16px;
 
   background: #faf7f2;
-
   border-radius: 14px;
 
   line-height: 1.7;
-}
 
-.hidden {
-  display: none !important;
+  overflow-wrap: anywhere;
 }
 
 
@@ -316,8 +324,14 @@ button {
 
 .meal-info {
   display: grid;
-
   gap: 18px;
+
+  min-width: 0;
+}
+
+.field,
+.field-label {
+  min-width: 0;
 }
 
 .field label,
@@ -332,7 +346,10 @@ button {
 
 .field input[type="date"],
 .field input[type="time"] {
+  display: block;
+
   width: 100%;
+  min-width: 0;
 
   padding: 11px 12px;
 
@@ -347,7 +364,7 @@ button {
 .meal-types {
   display: grid;
 
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 8px;
 }
@@ -355,15 +372,23 @@ button {
 .meal-type {
   display: flex;
   align-items: center;
+
+  min-width: 0;
+
   gap: 7px;
 
   padding: 10px 12px;
 
   background: #fafafa;
-
   border-radius: 12px;
 
   cursor: pointer;
+}
+
+.meal-type span,
+.meal-type label {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 
@@ -384,7 +409,6 @@ button {
   margin-top: 4px;
 
   color: #999;
-
   font-size: 13px;
 }
 
@@ -395,6 +419,9 @@ button {
 
 .photo-box {
   display: block;
+
+  width: 100%;
+  max-width: 100%;
 
   margin-top: 18px;
 
@@ -412,11 +439,12 @@ button {
   padding: 32px 20px;
 
   text-align: center;
+
+  overflow-wrap: anywhere;
 }
 
 .photo-icon {
   margin-bottom: 8px;
-
   font-size: 34px;
 }
 
@@ -432,6 +460,7 @@ button {
   display: block;
 
   width: 100%;
+  max-width: 100%;
   height: auto;
 
   object-fit: contain;
@@ -447,10 +476,16 @@ button {
 ========================================================= */
 
 .tasks {
+  width: 100%;
+  min-width: 0;
+
   margin-top: 18px;
 }
 
 .task-group {
+  width: 100%;
+  min-width: 0;
+
   margin-bottom: 12px;
 }
 
@@ -463,8 +498,10 @@ button {
 
 .task {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+
+  width: 100%;
+  min-width: 0;
 
   margin-bottom: 9px;
   padding: 14px;
@@ -487,10 +524,18 @@ button {
 
 .task input {
   flex: 0 0 auto;
+
+  width: auto;
+  max-width: none;
+
+  margin-top: 2px;
 }
 
 .task-text {
   flex: 1;
+  min-width: 0;
+
+  overflow-wrap: anywhere;
 }
 
 .task-text strong {
@@ -505,17 +550,19 @@ button {
   margin-top: 3px;
 
   color: #999;
-
   font-size: 12px;
+
+  overflow-wrap: anywhere;
 }
 
 .meal-points-preview {
-  margin-top: 16px;
+  width: 100%;
+  min-width: 0;
 
+  margin-top: 16px;
   padding: 13px;
 
   background: #f5f8f2;
-
   border-radius: 13px;
 
   color: #69805e;
@@ -524,13 +571,17 @@ button {
 
   font-size: 14px;
   font-weight: 600;
+
+  overflow-wrap: anywhere;
 }
 
 .complete-button {
+  display: block;
+
   width: 100%;
+  max-width: 100%;
 
   margin-top: 14px;
-
   padding: 13px 18px;
 
   border: 0;
@@ -554,20 +605,20 @@ button {
 
 .complete-button:disabled {
   opacity: 0.5;
-
   cursor: default;
 }
 
 .meal-message {
-  margin-top: 10px;
-
   min-height: 20px;
+
+  margin-top: 10px;
 
   color: #78916d;
 
   text-align: center;
-
   font-size: 13px;
+
+  overflow-wrap: anywhere;
 }
 
 
@@ -585,11 +636,13 @@ button {
 
 #meal-count {
   color: #999;
-
   font-size: 13px;
 }
 
 #meal-history {
+  width: 100%;
+  min-width: 0;
+
   margin-top: 18px;
 }
 
@@ -599,16 +652,17 @@ button {
   color: #aaa;
 
   text-align: center;
-
   line-height: 1.8;
 }
 
 .history-item {
+  width: 100%;
+  min-width: 0;
+
   margin-bottom: 12px;
   padding: 14px;
 
   background: #fafafa;
-
   border-radius: 15px;
 }
 
@@ -618,23 +672,32 @@ button {
   justify-content: space-between;
 
   gap: 10px;
+
+  min-width: 0;
 }
 
 .history-meal {
+  min-width: 0;
+
   font-weight: 700;
+
+  overflow-wrap: anywhere;
 }
 
 .history-time {
-  color: #999;
+  flex-shrink: 0;
 
+  color: #999;
   font-size: 12px;
 }
 
 .history-photo {
+  width: 100%;
+  max-width: 100%;
+
   margin-top: 12px;
 
   overflow: hidden;
-
   border-radius: 14px;
 }
 
@@ -642,6 +705,7 @@ button {
   display: block;
 
   width: 100%;
+  max-width: 100%;
   height: auto;
 
   object-fit: contain;
@@ -651,7 +715,6 @@ button {
   margin-top: 10px;
 
   color: #708865;
-
   font-size: 13px;
 }
 
@@ -659,6 +722,10 @@ button {
 /* =========================================================
    💌 交換日記首頁
 ========================================================= */
+
+.diary-page {
+  min-width: 0;
+}
 
 .diary-intro-card {
   padding: 30px 24px;
@@ -674,6 +741,7 @@ button {
   margin: 10px 0 8px;
 
   font-size: 30px;
+  line-height: 1.3;
 }
 
 .diary-main-subtitle {
@@ -682,11 +750,13 @@ button {
   color: #888;
 
   font-size: 14px;
-
   line-height: 1.8;
+
+  overflow-wrap: anywhere;
 }
 
-.current-diary-author {
+.current-diary-author,
+.diary-current-author {
   display: inline-block;
 
   margin-top: 16px;
@@ -694,893 +764,31 @@ button {
   padding: 7px 13px;
 
   background: #f6f3ef;
-
   border-radius: 999px;
 
   color: #666;
-
   font-size: 13px;
 }
 
 
 /* =========================================================
-   日記卡片標題
-========================================================= */
-
-.diary-card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  margin-bottom: 18px;
-}
-
-
-/* =========================================================
-   📅 日記日曆
-========================================================= */
-
-.diary-calendar-navigation {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  margin-bottom: 14px;
-}
-
-.calendar-nav-button {
-  width: 36px;
-  height: 36px;
-
-  border: 0;
-  border-radius: 50%;
-
-  background: #f5f3f0;
-
-  color: #555;
-
-  font-size: 22px;
-
-  cursor: pointer;
-}
-
-.diary-calendar-title {
-  font-weight: 700;
-}
-
-.diary-calendar {
-  display: grid;
-
-  grid-template-columns: repeat(7, 1fr);
-
-  gap: 5px;
-}
-
-.diary-calendar-weekday {
-  padding: 6px 0;
-
-  color: #aaa;
-
-  text-align: center;
-
-  font-size: 12px;
-}
-
-.diary-calendar-day {
-  position: relative;
-
-  min-height: 44px;
-
-  border: 0;
-  border-radius: 13px;
-
-  background: transparent;
-
-  color: #555;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-}
-
-.diary-calendar-day:hover {
-  background: #f8f6f3;
-}
-
-.diary-calendar-day.today {
-  box-shadow:
-    inset 0 0 0 1px #ddd;
-}
-
-.diary-calendar-day.has-diary {
-  background: #fff1f3;
-
-  font-weight: 700;
-}
-
-.diary-calendar-day.has-diary::after {
-  content: "";
-
-  position: absolute;
-
-  left: 50%;
-  bottom: 5px;
-
-  width: 5px;
-  height: 5px;
-
-  transform: translateX(-50%);
-
-  background: #d98795;
-
-  border-radius: 50%;
-}
-
-.diary-calendar-day.other-month {
-  color: #ddd;
-
-  cursor: default;
-}
-
-
-/* =========================================================
-   ✍️ 寫日記
-========================================================= */
-
-.diary-input {
-  width: 100%;
-  min-height: 170px;
-
-  padding: 15px;
-
-  border: 1px solid #e5e0db;
-  border-radius: 16px;
-
-  background: #fff;
-
-  color: #333;
-
-  outline: none;
-
-  resize: vertical;
-
-  line-height: 1.8;
-}
-
-.diary-input:focus {
-  border-color: #c8bdb3;
-}
-
-.diary-input::placeholder {
-  color: #bbb;
-}
-
-
-/* =========================================================
-   心情
-========================================================= */
-
-.diary-mood-section {
-  margin-top: 16px;
-}
-
-.diary-field-label {
-  margin-bottom: 8px;
-
-  color: #777;
-
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.diary-mood-buttons {
-  display: flex;
-
-  gap: 7px;
-
-  flex-wrap: wrap;
-}
-
-.diary-mood-button {
-  width: 38px;
-  height: 38px;
-
-  padding: 0;
-
-  border: 1px solid #eee;
-  border-radius: 50%;
-
-  background: #fafafa;
-
-  font-size: 19px;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.diary-mood-button:hover {
-  transform: scale(1.06);
-}
-
-.diary-mood-button.active {
-  background: #fff0f2;
-
-  border-color: #e8b7c0;
-
-  transform: scale(1.08);
-}
-
-
-/* =========================================================
-   📷 日記照片
-========================================================= */
-
-.diary-photo-section {
-  margin-top: 16px;
-}
-
-.diary-photo-button {
-  display: inline-flex;
-  align-items: center;
-
-  padding: 9px 13px;
-
-  background: #f6f4f1;
-
-  border-radius: 999px;
-
-  color: #666;
-
-  font-size: 13px;
-
-  cursor: pointer;
-}
-
-.diary-photo-input {
-  display: none;
-}
-
-.diary-photo-preview {
-  margin-top: 10px;
-
-  max-width: 220px;
-
-  overflow: hidden;
-
-  border-radius: 15px;
-}
-
-.diary-photo-preview img {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  object-fit: contain;
-}
-
-.diary-save-button {
-  width: 100%;
-
-  margin-top: 18px;
-
-  padding: 13px 18px;
-
-  border: 0;
-  border-radius: 999px;
-
-  background: #333;
-  color: #fff;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-.diary-save-button:hover {
-  transform: translateY(-1px);
-}
-
-.diary-save-button:disabled {
-  opacity: 0.5;
-
-  cursor: default;
-}
-
-.diary-message {
-  min-height: 20px;
-
-  margin-top: 9px;
-
-  color: #78916d;
-
-  text-align: center;
-
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   📖 日記內容
-========================================================= */
-
-.diary-history {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 16px;
-}
-
-.diary-empty {
-  padding: 32px 10px;
-
-  color: #aaa;
-
-  text-align: center;
-
-  line-height: 1.9;
-}
-
-.diary-entry {
-  padding: 18px;
-
-  background: #fcfbfa;
-
-  border: 1px solid #eee8e2;
-
-  border-radius: 18px;
-}
-
-.diary-entry-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 10px;
-
-  margin-bottom: 12px;
-}
-
-.diary-author {
-  display: flex;
-  align-items: center;
-
-  gap: 7px;
-
-  font-weight: 700;
-}
-
-.diary-date {
-  color: #aaa;
-
-  font-size: 12px;
-}
-
-.diary-content {
-  white-space: pre-wrap;
-
-  line-height: 1.85;
-
-  font-size: 15px;
-}
-
-.diary-entry-mood {
-  margin-top: 10px;
-
-  font-size: 19px;
-}
-
-.diary-entry-photo {
-  margin-top: 13px;
-
-  overflow: hidden;
-
-  border-radius: 15px;
-
-  background: #f5f5f5;
-}
-
-.diary-entry-photo img {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  max-height: 650px;
-
-  object-fit: contain;
-}
-
-
-/* =========================================================
-   ❤️ 表情
-========================================================= */
-
-.diary-reactions {
-  display: flex;
-
-  gap: 7px;
-
-  margin-top: 14px;
-
-  flex-wrap: wrap;
-}
-
-.diary-reaction-button {
-  border: 1px solid #eee;
-
-  border-radius: 999px;
-
-  padding: 6px 10px;
-
-  background: #fff;
-
-  color: #666;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.diary-reaction-button:hover {
-  transform: translateY(-1px);
-}
-
-.diary-reaction-button.active {
-  background: #fff0f2;
-
-  border-color: #e7bbc2;
-}
-
-
-/* =========================================================
-   💬 回覆
-========================================================= */
-
-.diary-replies {
-  margin-top: 15px;
-
-  padding-top: 13px;
-
-  border-top: 1px solid #eee8e2;
-}
-
-.diary-reply {
-  margin-bottom: 9px;
-
-  font-size: 14px;
-
-  line-height: 1.7;
-}
-
-.diary-reply-author {
-  margin-right: 5px;
-
-  font-weight: 700;
-}
-
-.diary-reply-form {
-  display: flex;
-
-  gap: 7px;
-
-  margin-top: 12px;
-}
-
-.diary-reply-input {
-  flex: 1;
-
-  min-width: 0;
-
-  padding: 9px 13px;
-
-  border: 1px solid #e5e0db;
-  border-radius: 999px;
-
-  outline: none;
-
-  background: #fff;
-}
-
-.diary-reply-input:focus {
-  border-color: #c8bdb3;
-}
-
-.diary-reply-button {
-  padding: 9px 14px;
-
-  border: 0;
-  border-radius: 999px;
-
-  background: #333;
-  color: #fff;
-
-  font-size: 13px;
-
-  cursor: pointer;
-}
-
-
-/* =========================================================
-   ✨ 日記里程碑
-========================================================= */
-
-.diary-milestone-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 9999;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 20px;
-
-  background: rgba(30, 25, 20, 0.25);
-
-  opacity: 0;
-
-  pointer-events: none;
-
-  transition: opacity 0.3s ease;
-}
-
-.diary-milestone-overlay.show {
-  opacity: 1;
-
-  pointer-events: auto;
-}
-
-.diary-milestone {
-  width: min(100%, 340px);
-
-  padding: 30px 24px;
-
-  background: #fff;
-
-  border-radius: 24px;
-
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.15);
-
-  text-align: center;
-
-  transform: scale(0.88);
-
-  transition: transform 0.35s ease;
-}
-
-.diary-milestone-overlay.show
-.diary-milestone {
-  transform: scale(1);
-}
-
-.diary-milestone-icon {
-  font-size: 52px;
-}
-
-.diary-milestone-title {
-  margin-top: 10px;
-
-  font-size: 21px;
-  font-weight: 700;
-}
-
-.diary-milestone-text {
-  margin-top: 7px;
-
-  color: #888;
-
-  font-size: 14px;
-
-  line-height: 1.7;
-}
-
-
-/* =========================================================
-   健康寶寶完成畫面
-========================================================= */
-
-.completion-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 9000;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 20px;
-
-  background: rgba(0, 0, 0, 0.45);
-}
-
-.completion-overlay.hidden {
-  display: none;
-}
-
-.completion-content {
-  width: min(100%, 430px);
-
-  padding: 30px 24px;
-
-  background: #fff;
-
-  border-radius: 25px;
-
-  text-align: center;
-
-  box-shadow:
-    0 20px 70px rgba(0, 0, 0, 0.2);
-}
-
-.completion-confetti {
-  font-size: 22px;
-}
-
-.completion-icon {
-  margin-top: 8px;
-
-  font-size: 52px;
-}
-
-.completion-small {
-  margin: 8px 0;
-
-  color: #999;
-
-  font-size: 11px;
-
-  letter-spacing: 3px;
-}
-
-.completion-content h1 {
-  margin: 8px 0;
-
-  font-size: 32px;
-}
-
-.completion-points {
-  font-weight: 800;
-}
-
-.completion-text {
-  color: #777;
-
-  line-height: 1.8;
-}
-
-.completion-button {
-  width: 100%;
-
-  margin-top: 12px;
-
-  padding: 13px 18px;
-
-  border: 0;
-  border-radius: 999px;
-
-  background: #333;
-  color: #fff;
-
-  font-weight: 700;
-
-  cursor: pointer;
-}
-
-
-/* =========================================================
-   願望券圖片區
-========================================================= */
-
-.voucher-modal {
-  margin-top: 18px;
-}
-
-.wish-voucher {
-  padding: 25px;
-
-  background: #fff;
-
-  border: 2px dashed #ddd;
-
-  border-radius: 18px;
-
-  text-align: center;
-}
-
-.voucher-ticket-icon {
-  font-size: 38px;
-}
-
-.voucher-label {
-  margin-top: 6px;
-
-  color: #999;
-
-  font-size: 11px;
-
-  letter-spacing: 2px;
-}
-
-.voucher-title {
-  margin-top: 8px;
-
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.voucher-points {
-  margin-top: 8px;
-
-  font-size: 13px;
-}
-
-.voucher-divider {
-  margin: 15px 0;
-
-  color: #bbb;
-}
-
-.voucher-main-title {
-  font-size: 24px;
-  font-weight: 800;
-}
-
-.voucher-main-text {
-  margin-top: 8px;
-
-  color: #777;
-
-  font-size: 13px;
-}
-
-.voucher-footer {
-  margin-top: 20px;
-
-  color: #aaa;
-
-  font-size: 11px;
-}
-
-.voucher-message {
-  margin-top: 15px;
-
-  color: #777;
-
-  line-height: 1.7;
-}
-
-.save-wish-message {
-  min-height: 20px;
-
-  margin-top: 8px;
-
-  color: #78916d;
-
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   手機版
-========================================================= */
-
-@media (max-width: 600px) {
-
-  .container {
-    width: min(100% - 20px, 760px);
-
-    padding-top: 70px;
-  }
-
-  .identity-switcher {
-    top: 10px;
-    right: 10px;
-  }
-
-  .identity-button {
-    padding: 7px 9px;
-
-    font-size: 12px;
-  }
-
-  .card {
-    padding: 19px;
-
-    border-radius: 18px;
-  }
-
-  .header {
-    padding: 25px 18px;
-
-    border-radius: 20px;
-  }
-
-  .header h1 {
-    font-size: 28px;
-  }
-
-  .main-tabs {
-    margin-bottom: 14px;
-  }
-
-  .main-tab {
-    font-size: 13px;
-  }
-
-  .meal-types {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .diary-main-title {
-    font-size: 27px;
-  }
-
-  .diary-calendar {
-    gap: 2px;
-  }
-
-  .diary-calendar-day {
-    min-height: 40px;
-  }
-
-  .diary-entry {
-    padding: 15px;
-  }
-
-  .diary-reply-form {
-    flex-direction: column;
-  }
-
-  .diary-reply-button {
-    width: 100%;
-  }
-
-  .completion-content {
-    padding: 25px 18px;
-  }
-
-}
-/* ==========================================================
-   💌 交換日記｜最終版
-========================================================== */
-
-
-/* =========================
    網站導覽
-========================= */
+========================================================= */
 
 .site-nav {
   display: flex;
+
+  width: 100%;
+  min-width: 0;
+
   gap: 8px;
+
   margin-bottom: 16px;
 }
 
 .site-nav-link {
   flex: 1;
+  min-width: 0;
 
   display: block;
 
@@ -1597,6 +805,8 @@ button {
 
   font-size: 14px;
   font-weight: 600;
+
+  overflow-wrap: anywhere;
 }
 
 .site-nav-link.active {
@@ -1606,19 +816,38 @@ button {
     0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
-
-/* =========================
-   Header
-========================= */
-
 .diary-header {
   margin-bottom: 16px;
 }
 
 
-/* =========================
+/* =========================================================
+   日記卡片
+========================================================= */
+
+.diary-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+
+  min-width: 0;
+}
+
+.diary-write-card,
+.diary-calendar-card,
+.diary-history-card,
+.diary-milestone-card {
+  min-width: 0;
+}
+
+
+/* =========================================================
    身份選擇
-========================= */
+========================================================= */
 
 .diary-page .identity-switcher {
   position: static;
@@ -1626,6 +855,7 @@ button {
   display: flex;
 
   width: 100%;
+  min-width: 0;
 
   gap: 10px;
 
@@ -1645,7 +875,6 @@ button {
   margin-bottom: 12px;
 
   color: #777;
-
   font-size: 14px;
 }
 
@@ -1653,9 +882,9 @@ button {
   position: static;
 
   flex: 1;
+  min-width: 0;
 
   width: auto;
-  min-width: 0;
 
   padding: 12px 10px;
 
@@ -1675,6 +904,8 @@ button {
     border-color 0.15s ease,
     transform 0.15s ease,
     box-shadow 0.15s ease;
+
+  overflow-wrap: anywhere;
 }
 
 .diary-page .identity-button:hover {
@@ -1698,27 +929,16 @@ button {
     0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.diary-current-author {
-  margin-top: 11px;
 
-  color: #888;
-
-  font-size: 13px;
-}
-
-
-/* =========================
-   寫日記
-========================= */
-
-.diary-write-card {
-  margin-top: 16px;
-}
+/* =========================================================
+   ✍️ 寫日記
+========================================================= */
 
 .diary-input {
   display: block;
 
   width: 100%;
+  max-width: 100%;
   min-height: 150px;
 
   margin-top: 16px;
@@ -1749,9 +969,9 @@ button {
 }
 
 
-/* =========================
-   心情選擇
-========================= */
+/* =========================================================
+   ❤️ 心情選擇
+========================================================= */
 
 .diary-mood-section {
   margin-top: 16px;
@@ -1768,7 +988,6 @@ button {
 
 .diary-field-label span {
   color: #aaa;
-
   font-size: 12px;
 }
 
@@ -1778,9 +997,13 @@ button {
   flex-wrap: wrap;
 
   gap: 7px;
+
+  min-width: 0;
 }
 
 .diary-mood-button {
+  flex: 0 0 auto;
+
   width: 40px;
   height: 40px;
 
@@ -1818,12 +1041,19 @@ button {
 }
 
 
-/* =========================
+/* =========================================================
    📷 日記照片
-========================= */
+========================================================= */
+
+.diary-photo-section {
+  margin-top: 16px;
+}
 
 .diary-photo-box {
   display: block;
+
+  width: 100%;
+  max-width: 100%;
 
   margin-top: 16px;
 
@@ -1836,6 +1066,8 @@ button {
   align-items: center;
   justify-content: center;
 
+  width: 100%;
+  max-width: 100%;
   min-height: 130px;
 
   overflow: hidden;
@@ -1850,17 +1082,24 @@ button {
   display: block;
 
   width: 100%;
+  max-width: 100%;
+  height: auto;
   max-height: 420px;
 
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .diary-photo-preview .photo-content {
+  width: 100%;
+  max-width: 100%;
+
   padding: 26px 20px;
 
   color: #888;
 
   text-align: center;
+
+  overflow-wrap: anywhere;
 }
 
 .diary-photo-preview .photo-icon {
@@ -1869,14 +1108,21 @@ button {
   font-size: 30px;
 }
 
+.diary-photo-input {
+  display: none;
+}
 
-/* =========================
-   送出
-========================= */
+
+/* =========================================================
+   送出日記
+========================================================= */
 
 #save-diary-button,
 .diary-save-button {
+  display: block;
+
   width: 100%;
+  max-width: 100%;
 
   margin-top: 16px;
   padding: 13px 18px;
@@ -1904,7 +1150,6 @@ button {
 #save-diary-button:disabled,
 .diary-save-button:disabled {
   opacity: 0.5;
-
   cursor: default;
 }
 
@@ -1916,36 +1161,45 @@ button {
   color: #78916d;
 
   text-align: center;
-
   font-size: 13px;
+
+  overflow-wrap: anywhere;
 }
 
 
-/* =========================
-   📅 日曆
-========================= */
+/* =========================================================
+   📅 日記日曆
+========================================================= */
 
-.diary-calendar-card {
-  margin-top: 16px;
-}
-
+.diary-calendar-navigation,
 .diary-calendar-header {
   display: flex;
 
   align-items: center;
   justify-content: space-between;
 
+  gap: 12px;
+
   margin-bottom: 14px;
+
+  min-width: 0;
 }
 
 .diary-calendar-title {
+  min-width: 0;
+
   color: #444;
 
   font-size: 17px;
   font-weight: 700;
+
+  text-align: center;
 }
 
+.calendar-nav-button,
 .diary-calendar-nav {
+  flex: 0 0 auto;
+
   width: 36px;
   height: 36px;
 
@@ -1958,12 +1212,13 @@ button {
 
   color: #555;
 
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
 
   cursor: pointer;
 }
 
+.calendar-nav-button:hover,
 .diary-calendar-nav:hover {
   background: #eeeae5;
 }
@@ -1971,12 +1226,17 @@ button {
 .diary-calendar {
   display: grid;
 
-  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  min-width: 0;
+
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 
   gap: 4px;
 }
 
 .diary-calendar-weekday {
+  min-width: 0;
+
   padding: 6px 0;
 
   color: #aaa;
@@ -1989,6 +1249,7 @@ button {
 .diary-calendar-day {
   position: relative;
 
+  min-width: 0;
   min-height: 42px;
 
   padding: 0;
@@ -2065,11 +1326,12 @@ button {
   margin-top: 13px;
 
   color: #999;
-
   font-size: 12px;
 }
 
 .diary-calendar-dot {
+  flex: 0 0 auto;
+
   width: 5px;
   height: 5px;
 
@@ -2079,12 +1341,19 @@ button {
 }
 
 
-/* =========================
+/* =========================================================
    📖 日記歷史
-========================= */
+========================================================= */
 
-.diary-history-card {
-  margin-top: 16px;
+.diary-history {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0;
+
+  width: 100%;
+  min-width: 0;
 }
 
 .diary-loading,
@@ -2096,29 +1365,33 @@ button {
   text-align: center;
 
   font-size: 14px;
-
   line-height: 1.8;
 }
 
 
-/* =========================
+/* =========================================================
    單篇日記
-========================= */
+========================================================= */
 
 .diary-entry {
-  padding: 24px 0;
+  width: 100%;
+  min-width: 0;
+
+  padding: 24px 18px;
 
   border-top: 1px solid #eee8e2;
+
+  overflow-wrap: anywhere;
 }
 
 .diary-entry:first-child {
-  padding-top: 4px;
+  padding-top: 8px;
 
   border-top: 0;
 }
 
 .diary-entry:last-child {
-  padding-bottom: 4px;
+  padding-bottom: 8px;
 }
 
 .diary-entry-header {
@@ -2128,6 +1401,8 @@ button {
   justify-content: space-between;
 
   gap: 12px;
+
+  min-width: 0;
 }
 
 .diary-author {
@@ -2135,12 +1410,26 @@ button {
 
   align-items: center;
 
+  min-width: 0;
+
   gap: 7px;
 
   color: #444;
 
   font-size: 14px;
   font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+.diary-author-mood {
+  flex: 0 0 auto;
+
+  margin-left: 2px;
+
+  font-size: 19px;
+
+  line-height: 1;
 }
 
 .diary-date {
@@ -2149,25 +1438,32 @@ button {
   color: #aaa;
 
   font-size: 11px;
+
+  white-space: nowrap;
 }
 
 .diary-content {
+  width: 100%;
+  min-width: 0;
+
   margin-top: 18px;
+  padding: 0 2px;
 
   color: #333;
 
   white-space: pre-wrap;
   word-break: break-word;
+  overflow-wrap: anywhere;
 
   font-size: 15px;
 
-  line-height: 2;
+  line-height: 1.9;
 }
 
 
-/* =========================
+/* =========================================================
    ❤️ 今日心情
-========================= */
+========================================================= */
 
 .diary-entry-mood {
   display: flex;
@@ -2177,6 +1473,7 @@ button {
   gap: 7px;
 
   margin-top: 20px;
+  padding: 0 2px;
 
   color: #888;
 
@@ -2185,22 +1482,24 @@ button {
 
 .diary-mood-label {
   color: #999;
-
   font-size: 12px;
 }
 
 .diary-mood-emoji {
   font-size: 20px;
-
   line-height: 1;
 }
 
 
-/* =========================
-   📷 日記照片
-========================= */
+/* =========================================================
+   📷 日記歷史照片
+   不裁切
+========================================================= */
 
 .diary-entry-photo {
+  width: 100%;
+  max-width: 100%;
+
   margin-top: 16px;
 
   overflow: hidden;
@@ -2214,26 +1513,42 @@ button {
   display: block;
 
   width: 100%;
+  max-width: 100%;
+  height: auto;
   max-height: 500px;
 
-  object-fit: cover;
+  object-fit: contain;
 }
 
 
-/* =========================
+/* =========================================================
    ❤️ 表情
-========================= */
+========================================================= */
 
 .diary-reactions {
   display: flex;
 
   align-items: center;
-
   flex-wrap: wrap;
 
   gap: 6px;
 
+  width: 100%;
+  min-width: 0;
+
   margin-top: 17px;
+  padding: 0 2px;
+}
+
+.diary-reactions::before {
+  content: "你的寶貝覺得";
+
+  flex: 0 0 auto;
+
+  margin-right: 4px;
+
+  color: #999;
+  font-size: 12px;
 }
 
 .diary-reaction-button,
@@ -2244,6 +1559,8 @@ button {
   justify-content: center;
 
   gap: 3px;
+
+  flex: 0 0 auto;
 
   min-width: 36px;
   min-height: 31px;
@@ -2290,20 +1607,30 @@ button {
 }
 
 
-/* =========================
+/* =========================================================
    💬 回覆
-========================= */
+========================================================= */
 
 .diary-replies {
-  margin-top: 20px;
+  width: calc(100% - 12px);
+  max-width: calc(100% - 12px);
 
-  padding-top: 15px;
+  margin-top: 20px;
+  margin-left: 12px;
+
+  padding: 15px 12px 4px;
 
   border-top: 1px solid #f0ece8;
+
+  min-width: 0;
 }
 
 .diary-reply {
+  width: 100%;
+  min-width: 0;
+
   margin-top: 8px;
+  margin-left: 0;
 
   padding: 8px 11px;
 
@@ -2316,6 +1643,9 @@ button {
   font-size: 13px;
 
   line-height: 1.65;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .diary-reply:first-child {
@@ -2333,6 +1663,9 @@ button {
 .diary-reply-form {
   display: flex;
 
+  width: 100%;
+  min-width: 0;
+
   gap: 7px;
 
   margin-top: 12px;
@@ -2340,8 +1673,8 @@ button {
 
 .diary-reply-input {
   flex: 1;
-
   min-width: 0;
+  width: 0;
 
   padding: 9px 12px;
 
@@ -2361,7 +1694,7 @@ button {
 }
 
 .diary-reply-button {
-  flex-shrink: 0;
+  flex: 0 0 auto;
 
   padding: 0 14px;
 
@@ -2379,9 +1712,9 @@ button {
 }
 
 
-/* =========================
+/* =========================================================
    🏠 回首頁
-========================= */
+========================================================= */
 
 .diary-home-link {
   padding: 22px 0 36px;
@@ -2398,9 +1731,137 @@ button {
 }
 
 
-/* =========================
-   ✨ 里程碑
-========================= */
+/* =========================================================
+   ✨ 交換日記里程碑
+========================================================= */
+
+.diary-milestone-card {
+  margin-top: 16px;
+  padding: 18px 20px;
+
+  background: #fffdfb;
+}
+
+.diary-milestone-card-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  min-width: 0;
+}
+
+.diary-milestone-card-header .diary-milestone-icon {
+  flex-shrink: 0;
+}
+
+.diary-milestone-icon {
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: #f8f3ed;
+
+  font-size: 22px;
+}
+
+.diary-milestone-card-title {
+  min-width: 0;
+
+  color: #444;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+.diary-milestone-card-subtitle {
+  margin-top: 3px;
+
+  color: #999;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+.diary-milestone-progress {
+  display: flex;
+
+  align-items: baseline;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin-top: 15px;
+  padding-top: 13px;
+
+  border-top: 1px solid #f0ebe6;
+}
+
+.diary-milestone-progress strong {
+  color: #555;
+
+  font-size: 19px;
+}
+
+.diary-milestone-progress span {
+  color: #999;
+
+  font-size: 12px;
+}
+
+.diary-milestone-button {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+
+  margin-top: 22px;
+  padding: 12px 18px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #333;
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.diary-milestone-button:hover {
+  opacity: 0.9;
+}
+
+.diary-milestone-button:active {
+  transform: scale(0.98);
+}
+
+
+/* =========================================================
+   ✨ 里程碑彈窗
+========================================================= */
 
 .diary-milestone-overlay {
   position: fixed;
@@ -2435,6 +1896,7 @@ button {
 
 .diary-milestone {
   width: min(330px, 100%);
+  max-width: 100%;
 
   padding: 34px 24px;
 
@@ -2478,16 +1940,432 @@ button {
   color: #888;
 
   font-size: 14px;
+  line-height: 1.7;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   健康寶寶完成畫面
+========================================================= */
+
+.completion-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.completion-overlay.hidden {
+  display: none;
+}
+
+.completion-content {
+  width: min(100%, 430px);
+  max-width: 100%;
+
+  padding: 30px 24px;
+
+  background: #fff;
+
+  border-radius: 25px;
+
+  text-align: center;
+
+  box-shadow:
+    0 20px 70px rgba(0, 0, 0, 0.2);
+
+  overflow-wrap: anywhere;
+}
+
+.completion-confetti {
+  font-size: 22px;
+}
+
+.completion-icon {
+  margin-top: 8px;
+
+  font-size: 52px;
+}
+
+.completion-small {
+  margin: 8px 0;
+
+  color: #999;
+
+  font-size: 11px;
+
+  letter-spacing: 3px;
+}
+
+.completion-content h1 {
+  margin: 8px 0;
+
+  font-size: 32px;
+}
+
+.completion-points {
+  font-weight: 800;
+}
+
+.completion-text {
+  color: #777;
+  line-height: 1.8;
+}
+
+.completion-button {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+
+  margin-top: 12px;
+  padding: 13px 18px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #333;
+  color: #fff;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   願望券圖片區
+========================================================= */
+
+.voucher-modal {
+  margin-top: 18px;
+}
+
+.wish-voucher {
+  width: 100%;
+  max-width: 100%;
+
+  padding: 25px;
+
+  background: #fff;
+
+  border: 2px dashed #ddd;
+  border-radius: 18px;
+
+  text-align: center;
+
+  overflow-wrap: anywhere;
+}
+
+.voucher-ticket-icon {
+  font-size: 38px;
+}
+
+.voucher-label {
+  margin-top: 6px;
+
+  color: #999;
+
+  font-size: 11px;
+
+  letter-spacing: 2px;
+}
+
+.voucher-title {
+  margin-top: 8px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.voucher-points {
+  margin-top: 8px;
+
+  font-size: 13px;
+}
+
+.voucher-divider {
+  margin: 15px 0;
+
+  color: #bbb;
+}
+
+.voucher-main-title {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.voucher-main-text {
+  margin-top: 8px;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+.voucher-footer {
+  margin-top: 20px;
+
+  color: #aaa;
+
+  font-size: 11px;
+}
+
+.voucher-message {
+  margin-top: 15px;
+
+  color: #777;
 
   line-height: 1.7;
 }
 
+.save-wish-message {
+  min-height: 20px;
 
-/* =========================
+  margin-top: 8px;
+
+  color: #78916d;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   🔐 交換日記登入
+========================================================= */
+
+.diary-lock-screen {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: #faf8f3;
+}
+
+.diary-lock-screen.hidden {
+  display: none;
+}
+
+.diary-lock-card {
+  width: min(92vw, 420px);
+  max-width: 100%;
+
+  padding: 36px 28px 30px;
+
+  text-align: center;
+
+  background: #fff;
+
+  border: 1px solid rgba(80, 70, 60, 0.08);
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 12px 40px rgba(60, 50, 40, 0.08);
+}
+
+.diary-lock-icon {
+  margin-bottom: 16px;
+
+  font-size: 44px;
+  line-height: 1;
+}
+
+.diary-lock-title {
+  margin: 0 0 8px;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.diary-lock-text {
+  margin: 0 0 22px;
+
+  color: #77716a;
+
+  font-size: 14px;
+  line-height: 1.7;
+
+  overflow-wrap: anywhere;
+}
+
+.diary-password-input {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+
+  padding: 13px 15px;
+
+  border: 1px solid #ddd7cf;
+
+  border-radius: 12px;
+
+  background: #fff;
+
+  font-size: 16px;
+
+  text-align: center;
+
+  outline: none;
+}
+
+.diary-password-input:focus {
+  border-color: #b7aaa0;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(183, 170, 160, 0.12);
+}
+
+.diary-login-button {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+
+  margin-top: 12px;
+  padding: 13px 16px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: #4f4a45;
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.diary-login-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.diary-login-message {
+  min-height: 22px;
+
+  margin-top: 12px;
+
+  color: #a05b5b;
+
+  font-size: 13px;
+
+  overflow-wrap: anywhere;
+}
+
+.diary-app-locked {
+  display: none !important;
+}
+
+
+/* =========================================================
    📱 手機版
-========================= */
+========================================================= */
 
 @media (max-width: 600px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: calc(100% - 20px);
+    max-width: 760px;
+
+    padding-top: 70px;
+    padding-bottom: 40px;
+  }
+
+  .identity-switcher {
+    top: 10px;
+    right: 10px;
+  }
+
+  .identity-button {
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 100%;
+
+    padding: 19px;
+
+    border-radius: 18px;
+  }
+
+  .header {
+    padding: 25px 18px;
+    border-radius: 20px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .main-tabs {
+    width: 100%;
+
+    margin-bottom: 14px;
+  }
+
+  .main-tab {
+    min-width: 0;
+
+    padding-left: 8px;
+    padding-right: 8px;
+
+    font-size: 13px;
+  }
+
+  .meal-types {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .task {
+    padding: 12px;
+  }
+
+  .task-text strong {
+    line-height: 1.5;
+  }
+
+  .task-text small {
+    line-height: 1.5;
+  }
+
+  .diary-main-title {
+    font-size: 27px;
+  }
+
+  .diary-intro-card {
+    padding: 25px 18px;
+  }
 
   .diary-page .identity-switcher {
     gap: 8px;
@@ -2495,7 +2373,6 @@ button {
 
   .diary-page .identity-button {
     padding: 11px 8px;
-
     font-size: 14px;
   }
 
@@ -2509,10 +2386,12 @@ button {
 
   .diary-calendar-day {
     min-height: 40px;
+
+    font-size: 13px;
   }
 
   .diary-entry {
-    padding: 20px 0;
+    padding: 20px 8px;
   }
 
   .diary-entry-header {
@@ -2526,257 +2405,71 @@ button {
   .diary-content {
     margin-top: 15px;
 
+    padding-left: 0;
+    padding-right: 0;
+
     line-height: 1.9;
   }
 
   .diary-entry-mood {
     margin-top: 17px;
+
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .diary-entry-photo {
+    margin-top: 14px;
+  }
+
+  .diary-entry-photo img {
+    max-height: 420px;
   }
 
   .diary-reactions {
     margin-top: 14px;
+
+    padding-left: 0;
+    padding-right: 0;
+
+    gap: 5px;
+  }
+
+  .diary-reaction-button,
+  .diary-reaction-display {
+    min-width: 34px;
+    min-height: 30px;
+
+    padding: 4px 7px;
   }
 
   .diary-replies {
+    width: calc(100% - 8px);
+    max-width: calc(100% - 8px);
+
     margin-top: 17px;
+    margin-left: 8px;
 
     padding-top: 13px;
   }
 
   .diary-reply-form {
+    flex-direction: row;
     gap: 6px;
   }
 
-  .diary-reply-button {
-    padding: 0 12px;
+  .diary-reply-input {
+    min-width: 0;
+    width: 0;
   }
 
-}
-/* =========================
-   單篇日記：增加內距
-========================= */
+  .diary-reply-button {
+    flex: 0 0 auto;
 
-.diary-entry {
-  padding: 24px 18px;
-}
+    padding: 0 12px;
 
-.diary-entry:first-child {
-  padding-top: 8px;
-}
-
-.diary-entry:last-child {
-  padding-bottom: 8px;
-}
-
-
-/* =========================
-   日記內容
-========================= */
-
-.diary-content {
-  margin-top: 18px;
-
-  padding: 0 2px;
-
-  color: #333;
-
-  white-space: pre-wrap;
-  word-break: break-word;
-
-  font-size: 15px;
-
-  line-height: 1.9;
-}
-
-
-/* =========================
-   今日心情
-========================= */
-
-.diary-entry-mood {
-  display: flex;
-
-  align-items: center;
-
-  gap: 7px;
-
-  margin-top: 20px;
-
-  padding: 0 2px;
-
-  color: #888;
-
-  font-size: 12px;
-}
-
-
-/* =========================
-   表情
-========================= */
-
-.diary-reactions {
-  display: flex;
-
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: 6px;
-
-  margin-top: 17px;
-
-  padding: 0 2px;
-}
-
-
-/* =========================
-   回覆
-========================= */
-
-.diary-replies {
-  margin-top: 20px;
-
-  padding: 15px 12px 4px;
-
-  border-top: 1px solid #f0ece8;
-}
-.diary-author-mood {
-  margin-left: 2px;
-
-  font-size: 19px;
-
-  line-height: 1;
-}
-
-.diary-replies {
-  margin-left: 12px;
-}
-
-.diary-reply {
-  margin-left: 0;
-}
-
-.diary-reactions::before {
-  content: "你的寶貝覺得";
-
-  color: #999;
-  font-size: 12px;
-
-  margin-right: 4px;
-}
-.diary-milestone-button {
-  width: 100%;
-
-  margin-top: 22px;
-  padding: 12px 18px;
-
-  border: 0;
-  border-radius: 999px;
-
-  background: #333;
-  color: #fff;
-
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.15s ease,
-    opacity 0.15s ease;
-}
-
-.diary-milestone-button:hover {
-  opacity: 0.9;
-}
-
-.diary-milestone-button:active {
-  transform: scale(0.98);
-}
-
-/* =========================================================
-   ✨ 我們的里程碑
-========================================================= */
-
-.diary-milestone-card {
-  margin-top: 16px;
-
-  padding: 18px 20px;
-
-  background: #fffdfb;
-}
-
-.diary-milestone-card-header {
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-}
-
-.diary-milestone-icon {
-  flex-shrink: 0;
-
-  width: 42px;
-  height: 42px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 13px;
-
-  background: #f8f3ed;
-
-  font-size: 22px;
-}
-
-.diary-milestone-card-title {
-  color: #444;
-
-  font-size: 15px;
-
-  font-weight: 700;
-}
-
-.diary-milestone-card-subtitle {
-  margin-top: 3px;
-
-  color: #999;
-
-  font-size: 12px;
-
-  line-height: 1.6;
-}
-
-.diary-milestone-progress {
-  display: flex;
-
-  align-items: baseline;
-
-  gap: 8px;
-
-  margin-top: 15px;
-
-  padding-top: 13px;
-
-  border-top: 1px solid #f0ebe6;
-}
-
-.diary-milestone-progress strong {
-  color: #555;
-
-  font-size: 19px;
-}
-
-.diary-milestone-progress span {
-  color: #999;
-
-  font-size: 12px;
-}
-
-@media (max-width: 600px) {
+    white-space: nowrap;
+  }
 
   .diary-milestone-card {
     padding: 17px 16px;
@@ -2786,4 +2479,1601 @@ button {
     gap: 6px;
   }
 
+  .completion-content {
+    width: min(100%, 430px);
+
+    padding: 25px 18px;
+  }
+
+  .wish-voucher {
+    padding: 20px 16px;
+  }
+}
+
+
+/* =========================================================
+   📱 小手機
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .container {
+    width: calc(100% - 16px);
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .main-tabs {
+    gap: 5px;
+    padding: 4px;
+  }
+
+  .main-tab {
+    font-size: 12px;
+  }
+
+  .meal-types {
+    gap: 6px;
+  }
+
+  .meal-type {
+    padding: 9px 8px;
+    gap: 5px;
+
+    font-size: 13px;
+  }
+
+  .diary-page .identity-switcher {
+    gap: 6px;
+  }
+
+  .diary-page .identity-button {
+    padding: 10px 5px;
+
+    font-size: 13px;
+  }
+
+  .diary-reactions::before {
+    width: 100%;
+
+    margin-right: 0;
+    margin-bottom: 2px;
+  }
+
+  .diary-reply-form {
+    flex-direction: column;
+  }
+
+  .diary-reply-input {
+    width: 100%;
+  }
+
+  .diary-reply-button {
+    width: 100%;
+    min-height: 38px;
+  }
+
+  .diary-lock-card {
+    padding: 30px 20px 24px;
+    border-radius: 20px;
+  }
+}
+
+
+/* =========================================================
+   🔐 登入｜手機版
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .diary-lock-card {
+    width: min(92vw, 420px);
+
+    padding: 32px 22px 26px;
+
+    border-radius: 20px;
+  }
+}
+
+/* =========================================================
+   🔐 健康寶寶登入
+========================================================= */
+
+.login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: #faf8f3;
+}
+
+.login-screen.hidden {
+  display: none !important;
+}
+
+.login-card {
+  width: min(92vw, 420px);
+  max-width: 100%;
+
+  padding: 34px 28px 28px;
+
+  background: #fff;
+
+  border: 1px solid rgba(80, 70, 60, 0.08);
+  border-radius: 24px;
+
+  text-align: center;
+
+  box-shadow:
+    0 12px 40px rgba(60, 50, 40, 0.08);
+}
+
+
+/* ---------------------------------------------------------
+   健康寶寶登入 Logo
+--------------------------------------------------------- */
+
+.login-icon {
+  margin-bottom: 10px;
+
+  font-size: 44px;
+  line-height: 1;
+}
+
+.login-brand {
+  margin-bottom: 10px;
+
+  color: #555;
+
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+
+/* ---------------------------------------------------------
+   標題
+--------------------------------------------------------- */
+
+.login-title {
+  margin: 0 0 8px;
+
+  color: #333;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+.login-subtitle,
+.login-text {
+  margin: 0 0 22px;
+
+  color: #77716a;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+
+/* ---------------------------------------------------------
+   密碼
+--------------------------------------------------------- */
+
+/*
+   同時支援：
+   class="login-password"
+   id="login-password"
+*/
+
+.login-password,
+#login-password {
+  display: block;
+
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 46px;
+
+  margin: 0;
+
+  padding: 0 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ddd7cf;
+  border-radius: 12px;
+
+  background: #fff;
+
+  color: #333;
+
+  font-family: inherit;
+  font-size: 16px;
+
+  text-align: center;
+
+  outline: none;
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.login-password::placeholder,
+#login-password::placeholder {
+  color: #aaa;
+}
+
+.login-password:focus,
+#login-password:focus {
+  border-color: #b7aaa0;
+
+  box-shadow:
+    0 0 0 3px rgba(183, 170, 160, 0.12);
+}
+
+
+/* ---------------------------------------------------------
+   登入按鈕
+--------------------------------------------------------- */
+
+.login-button,
+#login-button {
+  display: block;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  height: 52px;
+
+  margin-top: 12px;
+
+  padding: 0 16px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #333;
+
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease;
+}
+
+.login-button:hover,
+#login-button:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.login-button:active,
+#login-button:active {
+  transform: scale(0.98);
+}
+
+.login-button:disabled,
+#login-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+
+/* ---------------------------------------------------------
+   登入錯誤訊息
+--------------------------------------------------------- */
+
+.login-message,
+#login-message {
+  min-height: 20px;
+
+  margin-top: 10px;
+
+  color: #a05b5b;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   🔐 登入頁｜頁面切換
+========================================================= */
+
+.login-page-switch {
+  display: flex;
+
+  width: 100%;
+  max-width: 100%;
+
+  gap: 8px;
+
+  margin-top: 22px;
+  padding-top: 18px;
+
+  border-top: 1px solid #eee8e2;
+}
+
+.login-page-link {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #eee8e2;
+  border-radius: 999px;
+
+  background: #faf9f7;
+
+  color: #777;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.login-page-link:hover {
+  background: #f3f0ec;
+  color: #444;
+
+  transform: translateY(-1px);
+}
+
+.login-page-link.active {
+  background: #f3f0ec;
+  color: #444;
+}
+
+
+/* =========================================================
+   📱 健康寶寶登入｜手機版
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .login-screen {
+    padding: 20px;
+  }
+
+  .login-card {
+    width: min(92vw, 420px);
+
+    padding: 30px 22px 24px;
+
+    border-radius: 21px;
+  }
+
+  .login-icon {
+    font-size: 40px;
+  }
+
+  .login-brand {
+    font-size: 13px;
+  }
+
+  .login-title {
+    font-size: 26px;
+  }
+
+  .login-subtitle,
+  .login-text {
+    margin-bottom: 20px;
+
+    font-size: 13px;
+  }
+
+  .login-password,
+  #login-password {
+    height: 46px;
+
+    font-size: 16px;
+  }
+
+  .login-button,
+  #login-button {
+    height: 50px;
+  }
+
+  .login-page-switch {
+    gap: 6px;
+  }
+
+  .login-page-link {
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   🏠 Our Little Days 首頁
+========================================================= */
+
+.home-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(250, 248, 245, 1) 48%,
+      rgba(248, 245, 241, 1) 100%
+    );
+}
+
+
+/* =========================================================
+   Header
+========================================================= */
+
+.site-header {
+  position: relative;
+  z-index: 100;
+
+  width: 100%;
+
+  padding: 14px 20px 0;
+}
+
+.site-header-inner {
+  width: min(100%, 900px);
+  margin: 0 auto;
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #4a4540;
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  letter-spacing: 0.2px;
+}
+
+.site-logo-icon {
+  color: #b88d95;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+
+/* =========================================================
+   首頁導覽列
+========================================================= */
+
+.home-page .site-nav {
+  display: flex;
+
+  width: 100%;
+
+  gap: 9px;
+
+  margin-top: 12px;
+  margin-bottom: 0;
+
+  padding: 0;
+}
+
+.home-page .site-nav-link {
+  flex: 1;
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+
+  padding: 10px 14px;
+
+  border: 1px solid rgba(80, 70, 60, 0.08);
+  border-radius: 15px;
+
+  background: rgba(255, 255, 255, 0.78);
+
+  color: #44403c;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  box-shadow:
+    0 3px 12px rgba(60, 50, 40, 0.035);
+
+  backdrop-filter: blur(8px);
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.home-page .site-nav-link:hover {
+  transform: translateY(-1px);
+
+  background: #fff;
+
+  box-shadow:
+    0 6px 18px rgba(60, 50, 40, 0.07);
+}
+
+.home-page .site-nav-link.active {
+  background: #fff;
+
+  box-shadow:
+    0 5px 18px rgba(60, 50, 40, 0.07);
+}
+
+
+/* =========================================================
+   首頁主要內容
+========================================================= */
+
+.home-main {
+  width: min(100% - 32px, 760px);
+
+  margin: 0 auto;
+
+  padding: 58px 0 20px;
+}
+
+
+/* =========================================================
+   Hero
+========================================================= */
+
+.home-hero {
+  padding: 20px 16px 34px;
+
+  text-align: center;
+}
+
+.home-hero-icon {
+  margin-bottom: 14px;
+
+  color: #c7959e;
+
+  font-size: 42px;
+  line-height: 1;
+}
+
+.home-eyebrow {
+  margin: 0 0 10px;
+
+  color: #a39b94;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 3px;
+}
+
+.home-hero h1 {
+  margin: 0;
+
+  color: #383431;
+
+  font-size: clamp(30px, 7vw, 44px);
+  font-weight: 700;
+
+  line-height: 1.35;
+
+  letter-spacing: 1px;
+}
+
+.home-description {
+  margin: 18px 0 0;
+
+  color: #88817b;
+
+  font-size: 14px;
+
+  line-height: 2;
+}
+
+
+/* =========================================================
+   功能卡片
+========================================================= */
+
+.home-features {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+
+  width: 100%;
+}
+
+.home-feature-card {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  min-height: 270px;
+
+  padding: 27px 24px 24px;
+
+  border: 1px solid rgba(80, 70, 60, 0.08);
+  border-radius: 24px;
+
+  color: inherit;
+  text-decoration: none;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 8px 30px rgba(60, 50, 40, 0.055);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.home-feature-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 13px 35px rgba(60, 50, 40, 0.09);
+}
+
+.home-feature-card:active {
+  transform: scale(0.985);
+}
+
+
+/* ---------------------------------------------------------
+   卡片背景
+--------------------------------------------------------- */
+
+.home-feature-card.health-card {
+  background:
+    linear-gradient(
+      145deg,
+      #f5f8f1 0%,
+      #eef3e9 100%
+    );
+}
+
+.home-feature-card.diary-card {
+  background:
+    linear-gradient(
+      145deg,
+      #fcf3f3 0%,
+      #f8eded 100%
+    );
+}
+
+
+/* ---------------------------------------------------------
+   卡片 Icon
+--------------------------------------------------------- */
+
+.home-feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54px;
+  height: 54px;
+
+  margin-bottom: 20px;
+
+  border-radius: 17px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  font-size: 29px;
+
+  box-shadow:
+    0 4px 15px rgba(80, 70, 60, 0.05);
+}
+
+
+/* ---------------------------------------------------------
+   卡片文字
+--------------------------------------------------------- */
+
+.home-feature-content {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.home-feature-label {
+  margin: 0 0 7px;
+
+  color: #99918a;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.home-feature-content h2 {
+  margin: 0;
+
+  color: #3f3a36;
+
+  font-size: 22px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+.home-feature-content p {
+  margin: 12px 0 0;
+
+  color: #817a74;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------------------------------------------------------
+   卡片箭頭
+--------------------------------------------------------- */
+
+.home-feature-arrow {
+  align-self: flex-end;
+
+  width: 38px;
+  height: 38px;
+
+  margin-top: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  color: #77706a;
+
+  font-size: 20px;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.home-feature-card:hover .home-feature-arrow {
+  transform: translateX(3px);
+
+  background: rgba(255, 255, 255, 0.95);
+}
+
+
+/* =========================================================
+   小小的一段話
+========================================================= */
+
+.home-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 15px;
+
+  padding: 42px 20px 20px;
+
+  color: #aaa29b;
+
+  text-align: center;
+}
+
+.home-note > span {
+  flex: 0 0 auto;
+
+  color: #c8b5a8;
+
+  font-size: 12px;
+}
+
+.home-note p {
+  margin: 0;
+
+  font-size: 13px;
+
+  line-height: 1.9;
+}
+
+
+/* =========================================================
+   Footer
+========================================================= */
+
+.site-footer {
+  padding: 10px 20px 38px;
+
+  color: #b0aaa4;
+
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+
+  font-size: 11px;
+
+  letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   🏠 首頁登入後隱藏邏輯
+========================================================= */
+
+.home-page #home-screen.hidden {
+  display: none !important;
+}
+
+
+/* =========================================================
+   📱 首頁手機版
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .site-header {
+    padding: 10px 10px 0;
+  }
+
+  .site-header-inner {
+    width: 100%;
+  }
+
+  .site-logo {
+    font-size: 13px;
+  }
+
+  .site-logo-icon {
+    font-size: 17px;
+  }
+
+  .home-page .site-nav {
+    gap: 6px;
+
+    margin-top: 10px;
+  }
+
+  .home-page .site-nav-link {
+    min-height: 43px;
+
+    padding: 9px 7px;
+
+    border-radius: 13px;
+
+    font-size: 13px;
+  }
+
+  .home-main {
+    width: calc(100% - 20px);
+
+    padding-top: 43px;
+  }
+
+  .home-hero {
+    padding: 15px 10px 30px;
+  }
+
+  .home-hero-icon {
+    margin-bottom: 12px;
+
+    font-size: 37px;
+  }
+
+  .home-eyebrow {
+    margin-bottom: 8px;
+
+    font-size: 11px;
+
+    letter-spacing: 2.5px;
+  }
+
+  .home-hero h1 {
+    font-size: 31px;
+  }
+
+  .home-description {
+    margin-top: 14px;
+
+    font-size: 13px;
+
+    line-height: 1.9;
+  }
+
+  .home-features {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+  .home-feature-card {
+    min-height: 205px;
+
+    padding: 22px 20px 20px;
+
+    border-radius: 21px;
+  }
+
+  .home-feature-icon {
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 15px;
+
+    border-radius: 15px;
+
+    font-size: 25px;
+  }
+
+  .home-feature-content h2 {
+    font-size: 20px;
+  }
+
+  .home-feature-content p {
+    margin-top: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+  }
+
+  .home-feature-arrow {
+    width: 34px;
+    height: 34px;
+
+    margin-top: 12px;
+
+    font-size: 18px;
+  }
+
+  .home-note {
+    gap: 10px;
+
+    padding: 34px 10px 14px;
+  }
+
+  .home-note p {
+    font-size: 12px;
+  }
+
+  .site-footer {
+    padding-bottom: 30px;
+  }
+}
+
+
+/* =========================================================
+   📱 很小的手機
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .home-page .site-nav-link {
+    padding-left: 4px;
+    padding-right: 4px;
+
+    font-size: 12px;
+  }
+
+  .home-main {
+    width: calc(100% - 16px);
+  }
+
+  .home-hero h1 {
+    font-size: 28px;
+  }
+
+  .home-feature-card {
+    min-height: 195px;
+
+    padding: 20px 18px;
+  }
+
+  .home-feature-content h2 {
+    font-size: 19px;
+  }
+}
+/* =========================================================
+   ✨ 首頁｜我們走過的日子
+========================================================= */
+
+.home-milestone-card {
+  width: 100%;
+  min-width: 0;
+
+  margin-top: 18px;
+  padding: 23px 24px 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffdfb 0%,
+      #faf6f1 100%
+    );
+
+  border: 1px solid rgba(80, 70, 60, 0.08);
+  border-radius: 22px;
+
+  box-shadow:
+    0 7px 25px rgba(60, 50, 40, 0.045);
+}
+
+
+/* =========================================================
+   標題
+========================================================= */
+
+.home-milestone-header {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  min-width: 0;
+}
+
+
+.home-milestone-icon {
+  flex: 0 0 auto;
+
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: #f8f1e9;
+
+  font-size: 21px;
+}
+
+
+.home-milestone-heading {
+  min-width: 0;
+}
+
+
+.home-milestone-label {
+  margin-bottom: 3px;
+
+  color: #aaa19a;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+
+.home-milestone-heading h2 {
+  margin: 0;
+
+  color: #49433e;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   日記數量
+========================================================= */
+
+.home-milestone-count-row {
+  display: flex;
+  align-items: baseline;
+
+  gap: 10px;
+
+  margin-top: 18px;
+
+  min-width: 0;
+}
+
+
+.home-diary-count {
+  flex: 0 0 auto;
+
+  color: #4b4540;
+
+  font-size: 27px;
+  font-weight: 800;
+
+  line-height: 1.2;
+}
+
+
+.home-diary-status {
+  min-width: 0;
+
+  color: #99918a;
+
+  font-size: 12px;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   已達成里程碑 Icon
+========================================================= */
+
+.home-milestone-icons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  min-width: 0;
+
+  margin-top: 17px;
+  padding-top: 15px;
+
+  border-top: 1px solid #eee8e2;
+}
+
+
+.home-milestone-achieved-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.8);
+
+  font-size: 20px;
+
+  box-shadow:
+    0 2px 8px rgba(60, 50, 40, 0.04);
+
+  animation:
+    milestoneAppear 0.35s ease both;
+}
+
+
+.home-milestone-empty {
+  color: #aaa19a;
+
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   Icon 出現動畫
+========================================================= */
+
+@keyframes milestoneAppear {
+
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
+
+
+/* =========================================================
+   去日記
+========================================================= */
+
+.home-milestone-link {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 16px;
+  padding-top: 14px;
+
+  border-top: 1px solid #eee8e2;
+
+  color: #77706a;
+
+  text-align: right;
+
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+
+.home-milestone-link:hover {
+  color: #4e4843;
+
+  transform: translateX(2px);
+}
+
+
+/* =========================================================
+   📱 手機
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .home-milestone-card {
+    margin-top: 14px;
+
+    padding: 20px 18px 18px;
+
+    border-radius: 20px;
+  }
+
+
+  .home-milestone-header {
+    gap: 11px;
+  }
+
+
+  .home-milestone-icon {
+    width: 41px;
+    height: 41px;
+
+    border-radius: 13px;
+
+    font-size: 19px;
+  }
+
+
+  .home-milestone-label {
+    font-size: 8px;
+
+    letter-spacing: 1.8px;
+  }
+
+
+  .home-milestone-heading h2 {
+    font-size: 16px;
+  }
+
+
+  .home-milestone-count-row {
+    margin-top: 16px;
+
+    gap: 8px;
+  }
+
+
+  .home-diary-count {
+    font-size: 25px;
+  }
+
+
+  .home-diary-status {
+    font-size: 11px;
+  }
+
+
+  .home-milestone-icons {
+    gap: 7px;
+
+    margin-top: 15px;
+    padding-top: 13px;
+  }
+
+
+  .home-milestone-achieved-icon {
+    width: 35px;
+    height: 35px;
+
+    border-radius: 11px;
+
+    font-size: 18px;
+  }
+
+
+  .home-milestone-link {
+    margin-top: 14px;
+    padding-top: 12px;
+
+    font-size: 11px;
+  }
+
+}
+
+
+/* =========================================================
+   📱 很小手機
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .home-milestone-card {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+
+  .home-milestone-achieved-icon {
+    width: 33px;
+    height: 33px;
+
+    font-size: 17px;
+  }
+
+}
+
+/* =========================
+   登出按鈕
+========================= */
+
+.site-nav-logout {
+  flex: 1;
+  padding: 14px 12px;
+
+  border: 1px solid #eee9e5;
+  border-radius: 16px;
+
+  background: #fff;
+  color: #333;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.site-nav-logout:hover {
+  background: #faf8f6;
+  color: #333;
+}
+/* ==========================================================
+   🎟️ Home Wish Voucher
+========================================================== */
+
+.home-wish-card {
+  margin-top: 24px;
+  padding: 28px 32px;
+  border: 1px solid #eee9e5;
+  border-radius: 24px;
+  background: #fff8f7;
+  box-shadow: 0 10px 30px rgba(70, 55, 45, 0.04);
+
+  display: flex;
+  align-items: center;
+  gap: 22px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.home-wish-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(70, 55, 45, 0.07);
+}
+
+
+/* ----------------------------------------------------------
+   Header
+---------------------------------------------------------- */
+
+.home-wish-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.home-wish-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+  background: #fff;
+
+  font-size: 27px;
+
+  box-shadow: 0 6px 18px rgba(70, 55, 45, 0.05);
+}
+
+.home-wish-heading {
+  min-width: 130px;
+}
+
+.home-wish-label {
+  margin-bottom: 5px;
+
+  color: #8c817a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+}
+
+.home-wish-heading h2 {
+  margin: 0;
+
+  color: #3f3a37;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+
+/* ----------------------------------------------------------
+   Content
+---------------------------------------------------------- */
+
+.home-wish-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-wish-content p {
+  margin: 0 0 14px;
+
+  color: #7d746e;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+
+/* ----------------------------------------------------------
+   Button
+---------------------------------------------------------- */
+
+.home-wish-button {
+  padding: 11px 18px;
+
+  border: 1px solid #e6ded9;
+  border-radius: 12px;
+
+  background: #fff;
+  color: #4b4541;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.home-wish-button:hover {
+  background: #faf7f5;
+  border-color: #dcd2cc;
+  transform: translateY(-1px);
+}
+
+.home-wish-button:active {
+  transform: translateY(0);
+}
+
+.home-wish-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+
+/* ----------------------------------------------------------
+   Message
+---------------------------------------------------------- */
+
+.home-wish-message {
+  margin-top: 8px;
+
+  color: #8b817b;
+  font-size: 12px;
+}
+
+
+/* ----------------------------------------------------------
+   Mobile
+---------------------------------------------------------- */
+
+@media (max-width: 600px) {
+  .home-wish-card {
+    padding: 24px 22px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .home-wish-header {
+    width: 100%;
+  }
+
+  .home-wish-content {
+    width: 100%;
+  }
+
+  .home-wish-button {
+    width: 100%;
+  }
+}
+.wish-close-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-family: inherit;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.wish-close-button:hover {
+  color: #333;
 }

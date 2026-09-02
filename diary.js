@@ -1,138 +1,66 @@
 // ==========================================================
-// 💌 交換日記 diary.js
+// 💌 Our Little Days｜交換日記
+//
+// 共用網站登入版
+//
+// 登入由 index.html 統一處理
+// Diary 不再有自己的登入畫面
+//
+// 功能：
+// 1. 使用 index.html 的共用 Token
+// 2. 日記讀取需要 Token
+// 3. 日記新增需要 Token
+// 4. 表情 / 回覆需要 Token
+// 5. 私人 Drive 照片透過 API 讀取
+// 6. 照片壓縮：1000 × 1000 / JPEG 70%
+// 7. POST 保留 no-cors + text/plain
+//    不使用 keepalive
 // ==========================================================
 
 // ==========================================================
-// 基本設定
+// 🔗 Apps Script API
 // ==========================================================
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbwEJGlmngyKuU571HDdigsJUvqkUk6LsTwLAnIfj0bFah6LrUkdoLELZiRK9vN-GMlU/exec";
 
 // ==========================================================
-// 身份
+// 🔐 共用登入 Token
+//
+// ⚠️ 這裡和 index.html / script.js 使用同一個 Token
 // ==========================================================
 
-const DIARY_AUTHOR_KEY = "healthy-baby-diary-author";
+const TOKEN_KEY = "veggie-baby-token";
 
-const DEFAULT_DIARY_AUTHOR = "SMALL";
+let diaryAuthToken = sessionStorage.getItem(TOKEN_KEY) || "";
+
+// ==========================================================
+// 👤 身份
+// ==========================================================
+
+const DIARY_AUTHOR_KEY = "veggie-baby-diary-author";
 
 const DIARY_AUTHORS = {
   BIG: {
-    name: "大朋友",
     icon: "🐕",
+    name: "大朋友",
   },
 
   SMALL: {
-    name: "小朋友",
     icon: "💃",
+    name: "小朋友",
   },
 };
 
-// ==========================================================
-// 表情
-// ==========================================================
-
-const REACTIONS = ["❤️", "🥰", "😂", "🥹", "😘", "🤣"];
+let currentDiaryAuthor = localStorage.getItem(DIARY_AUTHOR_KEY) || "SMALL";
 
 // ==========================================================
-// 里程碑
-//
-// 兩人的日記總篇數
+// 📖 日記資料
 // ==========================================================
 
-const DIARY_MILESTONES = [
-  {
-    count: 1,
-    icon: "💌",
-    title: "第一篇日記！",
-    text: "我們的故事開始了 ❤️",
-  },
+let currentDiaryDate = null;
 
-  {
-    count: 5,
-    icon: "🌱",
-    title: "5 篇了！",
-    text: "一點一點，寫成我們的日子。",
-  },
-
-  {
-    count: 10,
-    icon: "🌿",
-    title: "10 篇了！",
-    text: "我們已經留下好多生活了。",
-  },
-
-  {
-    count: 20,
-    icon: "✨",
-    title: "20 篇了！",
-    text: "日子正在慢慢長成故事。",
-  },
-
-  {
-    count: 30,
-    icon: "💕",
-    title: "30 篇了！",
-    text: "好多小日子，都被好好留下來了。",
-  },
-
-  {
-    count: 40,
-    icon: "🎉",
-    title: "40 篇了！",
-    text: "我們的故事越來越長了！",
-  },
-
-  {
-    count: 50,
-    icon: "💌",
-    title: "50 篇了！",
-    text: "謝謝我們一直把生活分享給彼此。",
-  },
-
-  {
-    count: 100,
-    icon: "🌳",
-    title: "100 篇了！",
-    text: "我們一起留下 100 個小日子。",
-  },
-
-  {
-    count: 200,
-    icon: "🏡",
-    title: "200 篇了！",
-    text: "好多生活，都被好好收藏起來了。",
-  },
-
-  {
-    count: 300,
-    icon: "💖",
-    title: "300 篇了！",
-    text: "我們已經一起留下這麼多生活了。",
-  },
-
-  {
-    count: 500,
-    icon: "✨",
-    title: "500 篇了！",
-    text: "我們居然已經一起寫了這麼多。",
-  },
-
-  {
-    count: 1000,
-    icon: "🏆",
-    title: "1000 篇了！",
-    text: "這裡已經裝滿好多好多我們了。",
-  },
-];
-
-// ==========================================================
-// 狀態
-// ==========================================================
-
-let currentDiaryAuthor =
-  localStorage.getItem(DIARY_AUTHOR_KEY) || DEFAULT_DIARY_AUTHOR;
+let diaryCurrentDate = new Date();
 
 let diaryDates = [];
 
@@ -142,27 +70,212 @@ let currentReactions = [];
 
 let currentReplies = [];
 
-let selectedDiaryPhoto = null;
-
 let selectedDiaryMood = "";
+
+let selectedDiaryPhoto = null;
 
 let isDiarySubmitting = false;
 
-let currentDiaryDate = null;
-
-let diaryCurrentDate = new Date(
-  new Date().getFullYear(),
-  new Date().getMonth(),
-  1,
-);
-
 // ==========================================================
-// 初始化
+// ✨ 里程碑
 // ==========================================================
 
-document.addEventListener("DOMContentLoaded", initializeDiary);
+const DIARY_MILESTONES = [
+  {
+    count: 1,
+    icon: "🌱",
+    title: "第一頁",
+    text: "我們開始一起寫下日子了 ❤️",
+  },
 
-async function initializeDiary() {
+  {
+    count: 3,
+    icon: "🌿",
+    title: "三頁日常",
+    text: "原來幸福可以很簡單，就是每天有你。",
+  },
+
+  {
+    count: 5,
+    icon: "🌷",
+    title: "五個小日子",
+    text: "我們已經偷偷收藏了五個小日子 💌",
+  },
+
+  {
+    count: 10,
+    icon: "🌸",
+    title: "十頁的小宇宙",
+    text: "十篇日記，十個只有我們知道的故事。",
+  },
+
+  {
+    count: 20,
+    icon: "🍀",
+    title: "二十個故事",
+    text: "一篇一篇，慢慢變成了屬於我們的日常。",
+  },
+
+  {
+    count: 30,
+    icon: "🌼",
+    title: "三十頁",
+    text: "三十篇日記，原來我們已經留下這麼多了。",
+  },
+
+  {
+    count: 50,
+    icon: "🫶",
+    title: "五十頁",
+    text: "五十次「今天也想跟你說愛你」。",
+  },
+
+  {
+    count: 75,
+    icon: "💐",
+    title: "回憶花園",
+    text: "我們開始擁有一座只屬於我們的回憶花園了。",
+  },
+
+  {
+    count: 100,
+    icon: "💕",
+    title: "一百頁",
+    text: "一百篇日記，都是我們一起生活過的證明。",
+  },
+
+  {
+    count: 150,
+    icon: "🏡",
+    title: "小小的家",
+    text: "這裡已經不只是一個日記本了，是我們的小家。",
+  },
+
+  {
+    count: 200,
+    icon: "🥂",
+    title: "兩百篇",
+    text: "兩百個故事，敬我們那些平凡又珍貴的日子。",
+  },
+
+  {
+    count: 250,
+    icon: "🌙",
+    title: "收藏成冊",
+    text: "那些看似平凡的日子，也都變成了值得收藏的故事。",
+  },
+
+  {
+    count: 300,
+    icon: "📖",
+    title: "三百頁",
+    text: "三百篇日記，已經足夠寫成一本只屬於我們的書。",
+  },
+
+  {
+    count: 400,
+    icon: "🎞️",
+    title: "我們的長篇故事",
+    text: "故事越寫越長，而我還是很期待下一頁。",
+  },
+
+  {
+    count: 500,
+    icon: "🌎",
+    title: "五百個故事",
+    text: "如果生活是一場旅行，我們已經一起走了好遠。",
+  },
+
+  {
+    count: 666,
+    icon: "🍀",
+    title: "六六大順",
+    text: "連宇宙都在偷偷祝我們順順利利。",
+  },
+
+  {
+    count: 777,
+    icon: "✨",
+    title: "幸運數字",
+    text: "777篇，好像連幸運都站在我們這邊。",
+  },
+
+  {
+    count: 888,
+    icon: "💫",
+    title: "長長久久",
+    text: "888篇，願我們的故事也一直一直延續下去。",
+  },
+
+  {
+    count: 1000,
+    icon: "♾️",
+    title: "千頁之約",
+    text: "一千篇了。可是我還是想知道，每天的你過得怎麼樣。",
+  },
+];
+
+let diaryTotalCount = 0;
+
+// ==========================================================
+// 🚀 初始化
+// ==========================================================
+
+document.addEventListener("DOMContentLoaded", async function () {
+  const token = sessionStorage.getItem(TOKEN_KEY);
+
+  // --------------------------------------------------
+  // 沒登入
+  // → 回首頁
+  // --------------------------------------------------
+
+  if (!token) {
+    window.location.replace("index.html");
+
+    return;
+  }
+
+  // --------------------------------------------------
+  // 有登入
+  // --------------------------------------------------
+
+  diaryAuthToken = token;
+
+  const logoutButton = document.getElementById("logout-button");
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", function () {
+      sessionStorage.removeItem(TOKEN_KEY);
+      window.location.replace("index.html");
+    });
+  }
+
+  await startDiaryApp();
+});
+
+// ==========================================================
+// 🔐 Token
+// ==========================================================
+
+function getDiaryToken() {
+  return sessionStorage.getItem(TOKEN_KEY) || "";
+}
+
+function setDiaryToken(token) {
+  diaryAuthToken = String(token || "");
+
+  if (diaryAuthToken) {
+    sessionStorage.setItem(TOKEN_KEY, diaryAuthToken);
+  } else {
+    sessionStorage.removeItem(TOKEN_KEY);
+  }
+}
+
+// ==========================================================
+// 🚀 啟動日記 App
+// ==========================================================
+
+async function startDiaryApp() {
   bindIdentityEvents();
 
   bindDiaryFormEvents();
@@ -173,17 +286,35 @@ async function initializeDiary() {
 
   renderCalendar();
 
-  // 只載入「哪些日期有日記」
-  // 不預先載入任何日記內容
-  await loadDiaryIndex();
+  // --------------------------------------------------
+  // 只先載入日期索引
+  // 不一次載入所有日記
+  // --------------------------------------------------
+
+  const success = await loadDiaryIndex();
+
+  if (!success) {
+    return;
+  }
+
+  // --------------------------------------------------
+  // 如果今天有日記，就顯示今天
+  // --------------------------------------------------
+
+  const today = formatDate(new Date());
+
+  if (diaryDates.includes(today)) {
+    await showDiaryForDate(today);
+  }
 }
+
 // ==========================================================
-// 身份
+// 👤 身份
 // ==========================================================
 
 function bindIdentityEvents() {
-  document.querySelectorAll(".identity-button").forEach((button) => {
-    button.addEventListener("click", () => {
+  document.querySelectorAll(".identity-button").forEach(function (button) {
+    button.addEventListener("click", function () {
       const author = button.dataset.author;
 
       if (!DIARY_AUTHORS[author]) {
@@ -196,8 +327,6 @@ function bindIdentityEvents() {
 
       updateIdentityUI();
 
-      // 如果目前正在看某一天，
-      // 重新 render，讓自己不能對自己的日記互動
       if (currentDiaryDate) {
         renderSelectedDiaryDate();
       }
@@ -205,15 +334,19 @@ function bindIdentityEvents() {
   });
 }
 
+// ==========================================================
+// 👤 更新身份 UI
+// ==========================================================
+
 function updateIdentityUI() {
-  document.querySelectorAll(".identity-button").forEach((button) => {
+  document.querySelectorAll(".identity-button").forEach(function (button) {
     button.classList.toggle(
       "active",
       button.dataset.author === currentDiaryAuthor,
     );
   });
 
-  const author = DIARY_AUTHORS[currentDiaryAuthor];
+  const author = DIARY_AUTHORS[currentDiaryAuthor] || DIARY_AUTHORS.SMALL;
 
   const currentAuthor = document.getElementById("current-diary-author");
 
@@ -223,7 +356,7 @@ function updateIdentityUI() {
 }
 
 // ==========================================================
-// 表單
+// ✍️ 表單
 // ==========================================================
 
 function bindDiaryFormEvents() {
@@ -233,9 +366,9 @@ function bindDiaryFormEvents() {
     photoInput.addEventListener("change", handleDiaryPhoto);
   }
 
-  document.querySelectorAll(".diary-mood-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelectorAll(".diary-mood-button").forEach((item) => {
+  document.querySelectorAll(".diary-mood-button").forEach(function (button) {
+    button.addEventListener("click", function () {
+      document.querySelectorAll(".diary-mood-button").forEach(function (item) {
         item.classList.remove("active");
       });
 
@@ -252,10 +385,24 @@ function bindDiaryFormEvents() {
   }
 }
 
+// ==========================================================
+// 📷 選擇照片
+// ==========================================================
+
 function handleDiaryPhoto(event) {
   const file = event.target.files[0];
 
   if (!file) {
+    selectedDiaryPhoto = null;
+
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    alert("請選擇圖片檔案");
+
+    event.target.value = "";
+
     selectedDiaryPhoto = null;
 
     return;
@@ -274,10 +421,24 @@ function handleDiaryPhoto(event) {
   reader.onload = function (e) {
     preview.innerHTML = `
 
-        <img
-          src="${e.target.result}"
-          alt="日記照片預覽"
-        />
+        <div class="photo-content">
+
+          <img
+            src="${e.target.result}"
+            alt="照片預覽"
+            style="
+              max-width:100%;
+              max-height:320px;
+              object-fit:contain;
+              border-radius:12px;
+            "
+          >
+
+          <small>
+            已選擇照片 ❤️
+          </small>
+
+        </div>
 
       `;
   };
@@ -286,7 +447,7 @@ function handleDiaryPhoto(event) {
 }
 
 // ==========================================================
-// 💌 新增日記
+// 📷 新增日記
 // ==========================================================
 
 async function submitDiary() {
@@ -308,6 +469,7 @@ async function submitDiary() {
 
   if (!content) {
     alert("寫一點生活紀錄吧 ❤️");
+
     return;
   }
 
@@ -315,15 +477,16 @@ async function submitDiary() {
 
   if (button) {
     button.disabled = true;
+
     button.textContent = "正在留下日記 ☁️";
   }
 
   try {
-    // ======================================================
-    // ① 處理照片
-    // ======================================================
-
     let photo = null;
+
+    // --------------------------------------------------
+    // 📷 照片處理
+    // --------------------------------------------------
 
     if (selectedDiaryPhoto) {
       if (button) {
@@ -339,19 +502,15 @@ async function submitDiary() {
       };
     }
 
-    // ======================================================
-    // ② 今天日期
-    // ======================================================
-
     const date = formatDate(new Date());
 
-    // ======================================================
-    // ③ 送出日記
-    // ======================================================
+    // --------------------------------------------------
+    // 取得送出前篇數
+    // --------------------------------------------------
 
-    if (button) {
-      button.textContent = "正在同步 ☁️";
-    }
+    // --------------------------------------------------
+    // 送出
+    // --------------------------------------------------
 
     await postJSON({
       action: "addDiary",
@@ -367,9 +526,9 @@ async function submitDiary() {
       photo: photo,
     });
 
-    // ======================================================
-    // ④ 清空表單
-    // ======================================================
+    // --------------------------------------------------
+    // 清空
+    // --------------------------------------------------
 
     input.value = "";
 
@@ -387,19 +546,13 @@ async function submitDiary() {
 
     resetDiaryPhotoPreview();
 
-    // ======================================================
-    // ⑤ 顯示成功
-    // ======================================================
-
     if (message) {
       message.textContent = "日記已送出 ❤️";
     }
 
-    // ======================================================
-    // ⑥ 更新日曆、里程碑、今天的日記
-    //
-    // 這些即使失敗，也不能判定日記送出失敗
-    // ======================================================
+    // --------------------------------------------------
+    // 更新資料
+    // --------------------------------------------------
 
     try {
       await loadDiaryIndex();
@@ -430,163 +583,6 @@ async function submitDiary() {
 }
 
 // ==========================================================
-// ✨ 我們的里程碑
-//
-// 篇數直接使用 Google Sheets 的真實總篇數
-// 兩個人看到的是同一個進度
-// ==========================================================
-
-let diaryTotalCount = 0;
-
-function renderDiaryMilestone() {
-  const calendarCard = document.querySelector(".diary-calendar-card");
-
-  if (!calendarCard) {
-    return;
-  }
-
-  let milestoneCard = document.getElementById("diary-milestone-card");
-
-  if (!milestoneCard) {
-    milestoneCard = document.createElement("section");
-
-    milestoneCard.id = "diary-milestone-card";
-
-    milestoneCard.className = "card diary-milestone-card";
-
-    calendarCard.parentNode.insertBefore(milestoneCard, calendarCard);
-  }
-
-  const milestones = DIARY_MILESTONES.slice().sort((a, b) => a.count - b.count);
-
-  // ========================================================
-  // 找目前最高里程碑
-  // ========================================================
-
-  let currentMilestone = null;
-
-  for (const milestone of milestones) {
-    if (diaryTotalCount >= milestone.count) {
-      currentMilestone = milestone;
-    }
-  }
-
-  // ========================================================
-  // 找下一個里程碑
-  // ========================================================
-
-  const nextMilestone = milestones.find(
-    (milestone) => milestone.count > diaryTotalCount,
-  );
-
-  // ========================================================
-  // 還沒有第一個里程碑
-  // ========================================================
-
-  if (!currentMilestone) {
-    const remaining = nextMilestone ? nextMilestone.count - diaryTotalCount : 0;
-
-    milestoneCard.innerHTML = `
-
-      <div class="diary-milestone-card-header">
-
-        <div class="diary-milestone-icon">
-          🌱
-        </div>
-
-        <div>
-
-          <div class="diary-milestone-card-title">
-            我們的里程碑
-          </div>
-
-          <div class="diary-milestone-card-subtitle">
-            一起把日子慢慢寫下來
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="diary-milestone-progress">
-
-        <strong>
-          ${diaryTotalCount} 篇
-        </strong>
-
-        ${
-          nextMilestone
-            ? `
-              <span>
-                再 ${remaining} 篇，
-                就到 ${nextMilestone.count} 篇 💌
-              </span>
-            `
-            : ""
-        }
-
-      </div>
-
-    `;
-
-    return;
-  }
-
-  // ========================================================
-  // 已經有里程碑
-  // ========================================================
-
-  milestoneCard.innerHTML = `
-
-    <div class="diary-milestone-card-header">
-
-      <div class="diary-milestone-icon">
-        ${currentMilestone.icon}
-      </div>
-
-      <div>
-
-        <div class="diary-milestone-card-title">
-          ${escapeHTML(currentMilestone.title)}
-        </div>
-
-        <div class="diary-milestone-card-subtitle">
-          ${escapeHTML(currentMilestone.text)}
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="diary-milestone-progress">
-
-      <strong>
-        ${diaryTotalCount} 篇
-      </strong>
-
-      ${
-        nextMilestone
-          ? `
-            <span>
-              再 ${nextMilestone.count - diaryTotalCount} 篇，
-              就到 ${nextMilestone.count} 篇 💌
-            </span>
-          `
-          : `
-            <span>
-              我們還在繼續寫下去 ❤️
-            </span>
-          `
-      }
-
-    </div>
-
-  `;
-}
-
-// ==========================================================
 // 📅 日期索引
 // ==========================================================
 
@@ -596,16 +592,25 @@ async function loadDiaryIndex() {
 
     diaryDates = Array.isArray(data.diaryDates) ? data.diaryDates : [];
 
-    // ⭐ Google Sheets 真實總篇數
     diaryTotalCount = Number(data.total) || 0;
 
     renderCalendar();
 
-    renderDiaryMilestone();
-
     return true;
   } catch (error) {
     console.error("日記日期讀取失敗", error);
+
+    // Token 過期
+    if (
+      error.message === "TOKEN_EXPIRED" ||
+      error.message === "LOGIN_REQUIRED"
+    ) {
+      setDiaryToken("");
+
+      window.location.replace("index.html");
+
+      return false;
+    }
 
     diaryDates = [];
 
@@ -613,14 +618,12 @@ async function loadDiaryIndex() {
 
     renderCalendar();
 
-    renderDiaryMilestone();
-
     return false;
   }
 }
 
 // ==========================================================
-// 📅 日曆
+// 📅 日曆事件
 // ==========================================================
 
 function bindCalendarEvents() {
@@ -629,7 +632,7 @@ function bindCalendarEvents() {
   const next = document.getElementById("diary-next-month");
 
   if (prev) {
-    prev.addEventListener("click", () => {
+    prev.addEventListener("click", function () {
       diaryCurrentDate = new Date(
         diaryCurrentDate.getFullYear(),
         diaryCurrentDate.getMonth() - 1,
@@ -641,7 +644,7 @@ function bindCalendarEvents() {
   }
 
   if (next) {
-    next.addEventListener("click", () => {
+    next.addEventListener("click", function () {
       diaryCurrentDate = new Date(
         diaryCurrentDate.getFullYear(),
         diaryCurrentDate.getMonth() + 1,
@@ -652,6 +655,10 @@ function bindCalendarEvents() {
     });
   }
 }
+
+// ==========================================================
+// 📅 Render 日曆
+// ==========================================================
 
 function renderCalendar() {
   const calendar = document.getElementById("diary-calendar");
@@ -674,7 +681,7 @@ function renderCalendar() {
 
   const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
 
-  weekdays.forEach((day) => {
+  weekdays.forEach(function (day) {
     const element = document.createElement("div");
 
     element.className = "diary-calendar-weekday";
@@ -719,7 +726,7 @@ function renderCalendar() {
       button.classList.add("has-diary");
     }
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", function () {
       showDiaryForDate(date);
     });
 
@@ -765,6 +772,17 @@ async function showDiaryForDate(date) {
   } catch (error) {
     console.error("日記讀取失敗", error);
 
+    if (
+      error.message === "TOKEN_EXPIRED" ||
+      error.message === "LOGIN_REQUIRED"
+    ) {
+      setDiaryToken("");
+
+      window.location.replace("index.html");
+
+      return;
+    }
+
     history.innerHTML = `
 
       <div class="diary-empty">
@@ -790,11 +808,9 @@ function renderSelectedDiaryDate() {
 
   history.innerHTML = "";
 
-  const diaries = currentDiaries
-    .slice()
-    .sort((a, b) =>
-      String(a.createdAt || "").localeCompare(String(b.createdAt || "")),
-    );
+  const diaries = currentDiaries.slice().sort(function (a, b) {
+    return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
+  });
 
   const header = document.createElement("div");
 
@@ -844,7 +860,7 @@ function renderSelectedDiaryDate() {
     return;
   }
 
-  diaries.forEach((diary) => {
+  diaries.forEach(function (diary) {
     history.appendChild(createDiaryElement(diary));
   });
 }
@@ -864,105 +880,73 @@ function createDiaryElement(diary) {
 
   const isMyDiary = diary.author === currentDiaryAuthor;
 
-  const diaryReactions = currentReactions.filter(
-    (item) => String(item.diaryId) === String(diary.id),
-  );
+  const diaryReactions = currentReactions.filter(function (item) {
+    return String(item.diaryId) === String(diary.id);
+  });
 
-  const diaryReplies = currentReplies.filter(
-    (item) => String(item.diaryId) === String(diary.id),
-  );
-
-  let photoHTML = "";
-
-  if (diary.photoUrl) {
-    photoHTML = `
-
-      <div class="diary-entry-photo">
-
-        <img
-          src="${escapeHTML(diary.photoUrl)}"
-          alt="日記照片"
-          loading="lazy"
-        />
-
-      </div>
-
-    `;
-  }
+  const diaryReplies = currentReplies.filter(function (item) {
+    return String(item.diaryId) === String(diary.id);
+  });
 
   // ========================================================
-  // 表情
-  //
-  // 自己的日記：
-  // 只看得到收到的表情
-  //
-  // 對方的日記：
-  // 才可以按表情
+  // ❤️ 表情
   // ========================================================
 
   let reactionsHTML = "";
 
-  if (isMyDiary) {
-    REACTIONS.forEach((reaction) => {
-      const count = diaryReactions.filter(
-        (item) => item.reaction === reaction,
-      ).length;
+  const reactionTypes = ["❤️", "🥰", "😂", "🥹", "😘", "🤣"];
 
+  reactionTypes.forEach(function (reaction) {
+    const count = diaryReactions.filter(function (item) {
+      return item.reaction === reaction;
+    }).length;
+
+    const mine = diaryReactions.some(function (item) {
+      return item.author === currentDiaryAuthor && item.reaction === reaction;
+    });
+
+    if (isMyDiary) {
       if (count > 0) {
         reactionsHTML += `
 
-            <span
-              class="diary-reaction-display"
-            >
+            <span class="diary-reaction-count">
 
               ${reaction}
-
-              <span>
-                ${count}
-              </span>
+              ${count}
 
             </span>
 
           `;
       }
-    });
-  } else {
-    REACTIONS.forEach((reaction) => {
-      const count = diaryReactions.filter(
-        (item) => item.reaction === reaction,
-      ).length;
 
-      const mine = diaryReactions.some(
-        (item) =>
-          item.author === currentDiaryAuthor && item.reaction === reaction,
-      );
+      return;
+    }
 
-      reactionsHTML += `
+    reactionsHTML += `
 
-          <button
-            class="diary-reaction-button ${mine ? "active" : ""}"
-            type="button"
-            data-diary-id="${escapeHTML(diary.id)}"
-            data-reaction="${reaction}"
-          >
+        <button
+          type="button"
+          class="diary-reaction-button ${mine ? "active" : ""}"
+          data-diary-id="${escapeHTML(diary.id)}"
+          data-reaction="${escapeHTML(reaction)}"
+        >
 
-            ${reaction}
+          ${reaction}
 
-            ${count > 0 ? `<span>${count}</span>` : ""}
+          ${count > 0 ? `<span>${count}</span>` : ""}
 
-          </button>
+        </button>
 
-        `;
-    });
-  }
+      `;
+  });
 
   // ========================================================
-  // 回覆
+  // 💬 回覆
   // ========================================================
 
   let repliesHTML = "";
 
-  diaryReplies.forEach((reply) => {
+  diaryReplies.forEach(function (reply) {
     const replyAuthor = DIARY_AUTHORS[reply.author] || DIARY_AUTHORS.SMALL;
 
     repliesHTML += `
@@ -984,16 +968,10 @@ function createDiaryElement(diary) {
   });
 
   // ========================================================
-  // 回覆輸入
-  //
-  // 只有對方可以回覆
+  // 💬 回覆輸入
   // ========================================================
 
-  let replyFormHTML = "";
-
-  if (!isMyDiary) {
-    replyFormHTML = `
-
+  let replyFormHTML = `
       <div class="diary-reply-form">
 
         <input
@@ -1009,39 +987,79 @@ function createDiaryElement(diary) {
           type="button"
           data-diary-id="${escapeHTML(diary.id)}"
         >
+
           回覆
+
         </button>
+
+      </div>
+
+    `;
+
+  // ========================================================
+  // 📷 私人照片
+  // ========================================================
+
+  let photoHTML = "";
+
+  // --------------------------------------------------------
+  // 優先使用 photoId / privatePhotoId
+  // 舊資料如果還是 photoUrl，也相容
+  // --------------------------------------------------------
+
+  const photoFileId =
+    diary.photoId || diary.privatePhotoId || diary.photoUrl || "";
+
+  if (photoFileId) {
+    photoHTML = `
+
+      <div
+        class="diary-photo private-diary-photo"
+        data-photo-file-id="${escapeHTML(photoFileId)}"
+      >
+
+        <div class="diary-photo-loading">
+
+          照片載入中 📷
+
+        </div>
 
       </div>
 
     `;
   }
 
+  // ========================================================
+  // 📝 卡片
+  // ========================================================
+
   article.innerHTML = `
 
     <div class="diary-entry-header">
 
-<div class="diary-author">
+      <div class="diary-author">
 
-  <span>
-    ${author.icon}
-  </span>
-
-  <span>
-    ${author.name}
-  </span>
-
-  ${
-    diary.mood
-      ? `
-        <span class="diary-author-mood">
-          ${diary.mood}
+        <span>
+          ${author.icon}
         </span>
-      `
-      : ""
-  }
 
-</div>
+        <span>
+          ${author.name}
+        </span>
+
+        ${
+          diary.mood
+            ? `
+              <span class="diary-author-mood">
+
+                ${escapeHTML(diary.mood)}
+
+              </span>
+            `
+            : ""
+        }
+
+      </div>
 
 
       <div class="diary-date">
@@ -1053,9 +1071,11 @@ function createDiaryElement(diary) {
     </div>
 
 
-    <div class="diary-content">${escapeHTML(
-      String(diary.content || "").trim(),
-    )}</div>
+    <div class="diary-content">
+
+      ${escapeHTML(String(diary.content || "").trim())}
+
+    </div>
 
 
     ${photoHTML}
@@ -1079,23 +1099,23 @@ function createDiaryElement(diary) {
   `;
 
   // ========================================================
-  // 表情事件
+  // ❤️ 表情事件
   // ========================================================
 
-  article.querySelectorAll(".diary-reaction-button").forEach((button) => {
-    button.addEventListener("click", () => {
+  article.querySelectorAll(".diary-reaction-button").forEach(function (button) {
+    button.addEventListener("click", function () {
       toggleReaction(button.dataset.diaryId, button.dataset.reaction);
     });
   });
 
   // ========================================================
-  // 回覆事件
+  // 💬 回覆事件
   // ========================================================
 
   const replyButton = article.querySelector(".diary-reply-button");
 
   if (replyButton) {
-    replyButton.addEventListener("click", () => {
+    replyButton.addEventListener("click", function () {
       const input = article.querySelector(".diary-reply-input");
 
       if (!input) {
@@ -1106,40 +1126,103 @@ function createDiaryElement(diary) {
     });
   }
 
+  // ========================================================
+  // 📷 載入私人照片
+  // ========================================================
+
+  if (photoFileId) {
+    loadPrivateDiaryPhoto(article, photoFileId);
+  }
+
   return article;
 }
 
 // ==========================================================
+// 📷 讀取私人照片
+// ==========================================================
+
+async function loadPrivateDiaryPhoto(article, fileId) {
+  const container = article.querySelector(".private-diary-photo");
+
+  if (!container) {
+    return;
+  }
+
+  try {
+    const data = await getJSON("photo", {
+      fileId: fileId,
+    });
+
+    if (!data.base64) {
+      throw new Error("照片資料不存在");
+    }
+
+    const mimeType = data.mimeType || data.mime || "image/jpeg";
+
+    const img = document.createElement("img");
+
+    img.src = `data:${mimeType};base64,${data.base64}`;
+
+    img.alt = "日記照片";
+
+    img.loading = "lazy";
+
+    img.style.width = "100%";
+
+    img.style.maxHeight = "700px";
+
+    // 不裁切
+    img.style.objectFit = "contain";
+
+    img.style.borderRadius = "12px";
+
+    container.innerHTML = "";
+
+    container.appendChild(img);
+  } catch (error) {
+    console.error("私人照片載入失敗：", error);
+
+    container.innerHTML = `
+
+      <div class="diary-photo-error">
+
+        照片目前無法載入 😢
+
+      </div>
+
+    `;
+  }
+}
+
+// ==========================================================
 // ❤️ 表情
-//
-// 重要：
-// 只有「對方的日記」才會進到這裡
 // ==========================================================
 
 async function toggleReaction(diaryId, reaction) {
-  const diary = currentDiaries.find(
-    (item) => String(item.id) === String(diaryId),
-  );
+  const diary = currentDiaries.find(function (item) {
+    return String(item.id) === String(diaryId);
+  });
 
   if (!diary) {
     return;
   }
 
-  // 防止作者自己呼叫
+  // 不允許自己對自己反應
   if (diary.author === currentDiaryAuthor) {
     return;
   }
 
-  const existingIndex = currentReactions.findIndex(
-    (item) =>
+  const existingIndex = currentReactions.findIndex(function (item) {
+    return (
       String(item.diaryId) === String(diaryId) &&
       item.author === currentDiaryAuthor &&
-      item.reaction === reaction,
-  );
+      item.reaction === reaction
+    );
+  });
 
-  // ========================================================
+  // --------------------------------------------------
   // 立即更新畫面
-  // ========================================================
+  // --------------------------------------------------
 
   if (existingIndex !== -1) {
     currentReactions.splice(existingIndex, 1);
@@ -1157,20 +1240,11 @@ async function toggleReaction(diaryId, reaction) {
     });
   }
 
-  // 只重畫這一張
-  const oldEntry = document.querySelector(
-    `.diary-entry[data-diary-id="${CSS.escape(String(diaryId))}"]`,
-  );
+  renderSelectedDiaryDate();
 
-  if (oldEntry) {
-    const newEntry = createDiaryElement(diary);
-
-    oldEntry.replaceWith(newEntry);
-  }
-
-  // ========================================================
+  // --------------------------------------------------
   // 背景同步
-  // ========================================================
+  // --------------------------------------------------
 
   try {
     await postJSON({
@@ -1185,34 +1259,11 @@ async function toggleReaction(diaryId, reaction) {
   } catch (error) {
     console.error("表情同步失敗", error);
 
-    // ======================================================
-    // 失敗 → rollback
-    // ======================================================
-
-    if (existingIndex !== -1) {
-      currentReactions.push({
-        id: "rollback-" + Date.now(),
-
-        diaryId: String(diaryId),
-
-        author: currentDiaryAuthor,
-
-        reaction: reaction,
-      });
-    } else {
-      const index = currentReactions.findIndex(
-        (item) =>
-          String(item.diaryId) === String(diaryId) &&
-          item.author === currentDiaryAuthor &&
-          item.reaction === reaction,
-      );
-
-      if (index !== -1) {
-        currentReactions.splice(index, 1);
-      }
+    try {
+      await showDiaryForDate(currentDiaryDate);
+    } catch (reloadError) {
+      console.error("重新載入失敗", reloadError);
     }
-
-    renderSelectedDiaryDate();
   }
 }
 
@@ -1227,22 +1278,13 @@ async function submitReply(diaryId, input) {
     return;
   }
 
-  const diary = currentDiaries.find(
-    (item) => String(item.id) === String(diaryId),
-  );
+  const diary = currentDiaries.find(function (item) {
+    return String(item.id) === String(diaryId);
+  });
 
   if (!diary) {
     return;
   }
-
-  // 只有對方可以回覆
-  if (diary.author === currentDiaryAuthor) {
-    return;
-  }
-
-  // ========================================================
-  // 立即加入畫面
-  // ========================================================
 
   const temporaryReply = {
     id: "local-" + Date.now(),
@@ -1288,19 +1330,31 @@ async function submitReply(diaryId, input) {
 }
 
 // ==========================================================
-// API：GET
+// 🌐 API：GET
 // ==========================================================
 
 async function getJSON(action, params = {}) {
+  const token = getDiaryToken();
+
+  // --------------------------------------------------
+  // Diary 所有 API 都需要共用 Token
+  // --------------------------------------------------
+
+  if (!token) {
+    throw new Error("LOGIN_REQUIRED");
+  }
+
   const query = new URLSearchParams();
 
   query.set("action", action);
 
-  Object.keys(params).forEach((key) => {
-    if (params[key] !== undefined) {
+  Object.keys(params).forEach(function (key) {
+    if (params[key] !== undefined && params[key] !== null) {
       query.set(key, params[key]);
     }
   });
+
+  query.set("token", token);
 
   query.set("t", Date.now());
 
@@ -1312,7 +1366,17 @@ async function getJSON(action, params = {}) {
 
   const data = await response.json();
 
-  if (!data.success) {
+  // --------------------------------------------------
+  // Token 過期
+  // --------------------------------------------------
+
+  if (data && (data.message === "TOKEN_EXPIRED" || data.authorized === false)) {
+    setDiaryToken("");
+
+    throw new Error("TOKEN_EXPIRED");
+  }
+
+  if (data && data.success === false) {
     throw new Error(data.message || "API 讀取失敗");
   }
 
@@ -1320,11 +1384,31 @@ async function getJSON(action, params = {}) {
 }
 
 // ==========================================================
-// API：POST
+// 🌐 API：POST
 // ==========================================================
 
 async function postJSON(data) {
-  const response = await fetch(API_URL, {
+  const token = getDiaryToken();
+
+  if (!token) {
+    throw new Error("LOGIN_REQUIRED");
+  }
+
+  const payload = {
+    ...data,
+
+    token: token,
+  };
+
+  // ========================================================
+  // ⚠️ 保留原本成功的方式
+  //
+  // no-cors
+  // text/plain
+  // 不使用 keepalive
+  // ========================================================
+
+  await fetch(API_URL, {
     method: "POST",
 
     mode: "no-cors",
@@ -1333,13 +1417,9 @@ async function postJSON(data) {
       "Content-Type": "text/plain;charset=utf-8",
     },
 
-    body: JSON.stringify(data),
-
-    keepalive: true,
+    body: JSON.stringify(payload),
   });
 
-  // no-cors 無法讀 response
-  // 但 request 已送出
   return true;
 }
 
@@ -1348,23 +1428,27 @@ async function postJSON(data) {
 // ==========================================================
 
 function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     const reader = new FileReader();
 
-    reader.onload = (event) => {
+    reader.onload = function (event) {
       const image = new Image();
 
-      image.onload = () => {
-        const maxWidth = 1200;
+      image.onload = function () {
+        const maxWidth = 1000;
 
-        const maxHeight = 1200;
+        const maxHeight = 1000;
 
         let width = image.width;
 
         let height = image.height;
 
         if (width > maxWidth || height > maxHeight) {
-          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          const ratio = Math.min(
+            maxWidth / width,
+
+            maxHeight / height,
+          );
 
           width = Math.round(width * ratio);
 
@@ -1381,9 +1465,17 @@ function fileToBase64(file) {
 
         context.drawImage(image, 0, 0, width, height);
 
-        const compressed = canvas.toDataURL("image/jpeg", 0.75);
+        const compressed = canvas.toDataURL("image/jpeg", 0.7);
 
-        resolve(compressed.split(",")[1]);
+        const base64 = compressed.split(",")[1];
+
+        if (base64.length > 3.2 * 1024 * 1024) {
+          reject(new Error("照片太大，請選擇較小的照片"));
+
+          return;
+        }
+
+        resolve(base64);
       };
 
       image.onerror = reject;
@@ -1398,7 +1490,7 @@ function fileToBase64(file) {
 }
 
 // ==========================================================
-// 工具
+// 🛠 工具
 // ==========================================================
 
 function formatDate(date) {
@@ -1411,11 +1503,19 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
+// ==========================================================
+// 😌 清除心情
+// ==========================================================
+
 function resetMoodButtons() {
-  document.querySelectorAll(".diary-mood-button").forEach((button) => {
+  document.querySelectorAll(".diary-mood-button").forEach(function (button) {
     button.classList.remove("active");
   });
 }
+
+// ==========================================================
+// 📷 清除照片預覽
+// ==========================================================
 
 function resetDiaryPhotoPreview() {
   const preview = document.getElementById("diary-photo-preview");
@@ -1444,6 +1544,10 @@ function resetDiaryPhotoPreview() {
 
   `;
 }
+
+// ==========================================================
+// 🛡 HTML Escape
+// ==========================================================
 
 function escapeHTML(value) {
   return String(value ?? "")

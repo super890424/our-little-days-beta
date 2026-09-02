@@ -4,324 +4,248 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>健康寶寶吃青菜挑戰 🥬</title>
+    <title>Our Little Days</title>
 
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
-    <main class="container">
-      <!-- ====================
-           網站導覽
-      ==================== -->
+  <body class="home-page">
+    <!-- =========================
+       Login Screen
+    ========================== -->
 
-      <nav class="site-nav">
-        <a href="index.html" class="site-nav-link active"> 🥬 健康寶寶 </a>
+    <div id="login-screen" class="login-screen">
+      <div class="login-card">
+        <div class="login-icon">♡</div>
 
-        <a href="diary.html" class="site-nav-link"> 💌 交換日記 </a>
-      </nav>
+        <div class="login-brand">OUR LITTLE DAYS</div>
 
-      <!-- ====================
-           Header
-      ==================== -->
+        <h1 class="login-title">我們的小日子</h1>
 
-      <section class="header">
-        <div>🥬 健康寶寶挑戰</div>
-
-        <h1>今天也一起吃菜吧</h1>
-
-        <p>吃蔬菜打卡換願望 ❤️</p>
-
-        <div class="points">
-          <span id="points">0</span>
-          點
-        </div>
-
-        <div class="progress-bg">
-          <div id="progress" class="progress"></div>
-        </div>
-
-        <div id="progress-text" class="progress-text">
-          距離獲得願望券還有 45 點
-        </div>
-      </section>
-
-      <!-- ====================
-           願望券
-      ==================== -->
-
-      <section class="card wish-card">
-        <div class="wish-icon">🎁</div>
-
-        <div class="wish-title">下一個願望</div>
-
-        <div id="wish-status" class="wish-status">
-          集滿 45 點，就可以許一個願望 ❤️
-        </div>
-
-        <div id="wish-form" class="wish-form hidden">
-          <label for="wish-input"> 💌 妳想要什麼？ </label>
-
-          <input
-            id="wish-input"
-            type="text"
-            placeholder="寫下妳的願望..."
-            maxlength="100"
-          />
-
-          <button id="wish-button" class="complete-button" type="button">
-            許下願望 💌
-          </button>
-        </div>
-
-        <div id="wish-result" class="wish-result hidden"></div>
-      </section>
-
-      <!-- ====================
-           新增餐點
-      ==================== -->
-
-      <section class="card">
-        <div class="meal-info">
-          <!-- 日期 -->
-
-          <div class="field">
-            <label for="meal-date"> 📅 日期 </label>
-
-            <input id="meal-date" type="date" />
-          </div>
-
-          <!-- 時間 -->
-
-          <div class="field">
-            <label for="meal-time"> 🕐 時間 </label>
-
-            <input id="meal-time" type="time" />
-          </div>
-
-          <!-- 餐別 -->
-
-          <div class="field">
-            <span class="field-label"> 🍽️ 餐別 </span>
-
-            <div class="meal-types">
-              <label class="meal-type">
-                <input type="radio" name="meal-type" value="早餐" />
-
-                🍳 早餐
-              </label>
-
-              <label class="meal-type">
-                <input type="radio" name="meal-type" value="午餐" />
-
-                🍱 午餐
-              </label>
-
-              <label class="meal-type">
-                <input type="radio" name="meal-type" value="晚餐" />
-
-                🍽️ 晚餐
-              </label>
-
-              <label class="meal-type">
-                <input type="radio" name="meal-type" value="菜菜點心" />
-
-                🥬 菜菜點心
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- ====================
-             餐點標題
-        ==================== -->
-
-        <div class="meal-header">
-          <div>
-            <div class="meal-title">🍽️ 新增一餐</div>
-
-            <div class="meal-subtitle">今天這餐有乖乖吃菜嗎？</div>
-          </div>
-        </div>
-
-        <!-- ====================
-             照片
-        ==================== -->
-
-        <label class="photo-box" for="meal-photo">
-          <div class="photo-content">
-            <div class="photo-icon">📸</div>
-
-            <div>留下這餐的照片</div>
-
-            <small> 照片不是必要的，有拍就留下來 ❤️ </small>
-          </div>
-        </label>
+        <p class="login-subtitle">只屬於我們的小小空間</p>
 
         <input
-          id="meal-photo"
-          class="photo-input"
-          type="file"
-          accept="image/*"
+          id="login-password"
+          class="login-password"
+          type="password"
+          placeholder="輸入密碼"
+          autocomplete="current-password"
         />
 
-        <!-- ====================
-             任務
-        ==================== -->
-
-        <div class="tasks">
-          <!-- 青菜份量 -->
-
-          <div class="task-group">
-            <div class="task-group-title">🥬 今天吃了多少青菜？</div>
-
-            <label class="task">
-              <input
-                id="veggie-one"
-                name="veggie-level"
-                type="radio"
-                value="1"
-              />
-
-              <div class="task-text">
-                <strong> 1 個拳頭以上 </strong>
-
-                <small> 有吃青菜就很棒 🌱 </small>
-              </div>
-
-              <strong> +1 </strong>
-            </label>
-
-            <label class="task">
-              <input
-                id="veggie-two"
-                name="veggie-level"
-                type="radio"
-                value="2"
-              />
-
-              <div class="task-text">
-                <strong> 2 個拳頭以上 </strong>
-
-                <small> 今天蔬菜吃得很足夠！ </small>
-              </div>
-
-              <strong> +2 </strong>
-            </label>
-          </div>
-
-          <!-- 第一口 -->
-
-          <label class="task">
-            <input id="first-bite-task" type="checkbox" class="task-checkbox" />
-
-            <div class="task-text">
-              <strong> ✨ 第一口先吃青菜 </strong>
-
-              <small> 吃其他東西以前，先吃一口菜 </small>
-            </div>
-
-            <strong> +1 </strong>
-          </label>
-
-          <!-- 水果 -->
-
-          <label class="task">
-            <input id="fruit-task" type="checkbox" class="task-checkbox" />
-
-            <div class="task-text">
-              <strong> 🍎 吃水果 </strong>
-
-              <small> 今天也補充一點水果 </small>
-            </div>
-
-            <strong> +1 </strong>
-          </label>
-
-          <!-- 有氧 -->
-
-          <label class="task">
-            <input id="exercise-task" type="checkbox" class="task-checkbox" />
-
-            <div class="task-text">
-              <strong> 🏃‍♀️ 走路／其他有氧 15 分鐘以上 </strong>
-
-              <small> 動一動，讓身體也開心一下 </small>
-            </div>
-
-            <strong> +2 </strong>
-          </label>
-        </div>
-
-        <!-- ====================
-             本餐得分
-        ==================== -->
-
-        <div id="meal-points-preview" class="meal-points-preview">
-          這餐可以獲得 +0 分 🌱
-        </div>
-
-        <!-- ====================
-             完成
-        ==================== -->
-
-        <button id="complete-meal" class="complete-button" type="button">
-          完成這餐 🥬
+        <button id="login-button" class="login-button" type="button">
+          進入我們的小日子 ♡
         </button>
 
-        <div id="meal-message" class="meal-message"></div>
-      </section>
-
-      <!-- ====================
-           吃菜日記
-      ==================== -->
-
-      <section class="card history-card">
-        <div class="history-header">
-          <div>
-            <div class="meal-title">📖 小朋友的吃菜日記</div>
-
-            <div class="meal-subtitle">每一餐都值得被記下來</div>
-          </div>
-
-          <span id="meal-count"> 0 餐 </span>
-        </div>
-
-        <div id="meal-history">
-          <div class="empty-history">今天還沒有紀錄 🥬</div>
-        </div>
-      </section>
-    </main>
-
-    <!-- ====================
-         挑戰完成畫面
-    ==================== -->
-
-    <div id="completion-overlay" class="completion-overlay hidden">
-      <div class="completion-content">
-        <div class="completion-confetti">🥬 ✨ 🎉 ✨ 🥬</div>
-
-        <div class="completion-icon">🎓</div>
-
-        <p class="completion-small">HEALTHY BABY</p>
-
-        <h1>妳做到了！</h1>
-
-        <p class="completion-points">45 / 45 POINTS</p>
-
-        <p class="completion-text">
-          這一張願望券<br />
-          是妳為自己努力換來的。❤️
-        </p>
+        <div id="login-message" class="login-message" aria-live="polite"></div>
       </div>
     </div>
 
-    <!-- ====================
-         JS
-    ==================== -->
+    <!-- =========================
+       Home Screen
+    ========================== -->
 
+    <main id="home-screen" class="home-screen hidden">
+      <!-- =========================
+         Header
+      ========================== -->
+
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a href="index.html" class="site-logo">
+            <span class="site-logo-icon">♡</span>
+            <span>Our Little Days</span>
+          </a>
+
+          <nav class="site-nav">
+            <a href="index.html" class="site-nav-link active"> 🏠 首頁 </a>
+
+            <a href="challenge.html" class="site-nav-link"> 🥬 健康寶寶 </a>
+
+            <a href="diary.html" class="site-nav-link"> 💌 交換日記 </a>
+
+            <button id="logout-button" class="site-nav-logout" type="button">
+              ↪ 離開
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <!-- =========================
+         Main
+      ========================== -->
+
+      <div class="home-main">
+        <!-- =========================
+           Hero
+        ========================== -->
+
+        <section class="home-hero">
+          <div class="home-hero-icon">♡</div>
+
+          <p class="home-eyebrow">OUR LITTLE DAYS</p>
+
+          <h1>我們的小日子</h1>
+
+          <p class="home-description">
+            把一起吃飯、一起生活，<br />
+            還有那些想記住的小事，<br />
+            都好好收藏起來。
+          </p>
+        </section>
+
+        <!-- =========================
+           Feature Cards
+        ========================== -->
+
+        <section class="home-features">
+          <!-- 健康寶寶 -->
+
+          <a href="challenge.html" class="home-feature-card health-card">
+            <div class="home-feature-icon">🥬</div>
+
+            <div class="home-feature-content">
+              <p class="home-feature-label">HEALTHY BABY</p>
+
+              <h2>健康寶寶</h2>
+
+              <p>一起吃菜菜、累積健康點數， 看看我們可以一起堅持多久。</p>
+            </div>
+
+            <div class="home-feature-arrow">→</div>
+          </a>
+
+          <!-- 交換日記 -->
+
+          <a href="diary.html" class="home-feature-card diary-card">
+            <div class="home-feature-icon">💌</div>
+
+            <div class="home-feature-content">
+              <p class="home-feature-label">OUR DIARY</p>
+
+              <h2>交換日記</h2>
+
+              <p>今天發生了什麼、今天想跟你說什麼， 都寫在這裡。</p>
+            </div>
+
+            <div class="home-feature-arrow">→</div>
+          </a>
+        </section>
+
+        <!-- =========================
+           ✨ Diary Milestone
+        ========================== -->
+
+        <section id="home-diary-milestone" class="home-milestone-card">
+          <div class="home-milestone-header">
+            <div class="home-milestone-icon">🌱</div>
+
+            <div class="home-milestone-heading">
+              <div class="home-milestone-label">OUR LITTLE STORY</div>
+
+              <h2>我們的里程碑</h2>
+            </div>
+          </div>
+
+          <div class="home-milestone-count-row">
+            <div id="home-diary-count" class="home-diary-count">— 篇</div>
+
+            <div id="home-diary-status" class="home-diary-status">
+              正在讀取我們的故事…
+            </div>
+          </div>
+
+          <div class="home-milestone-progress">
+            <div
+              id="home-milestone-progress-bar"
+              class="home-milestone-progress-bar"
+            ></div>
+          </div>
+
+          <div class="home-milestone-bottom">
+            <div id="home-milestone-icon" class="home-next-milestone-icon">
+              💌
+            </div>
+
+            <div id="home-milestone-text" class="home-next-milestone-text">
+              正在準備下一個小里程碑…
+            </div>
+          </div>
+
+          <a href="diary.html" class="home-milestone-link">
+            去看看我們的日記 →
+          </a>
+        </section>
+        <!-- =========================
+   🎟️ Wish Voucher
+========================== -->
+
+        <!-- =========================
+   🎟️ Wish Voucher
+========================== -->
+
+        <section id="home-wish-voucher" class="home-wish-card hidden">
+          <div class="home-wish-header">
+            <div class="home-wish-icon">🎟️</div>
+
+            <div class="home-wish-heading">
+              <div class="home-wish-label">WISH VOUCHER</div>
+
+              <h2>我的願望券</h2>
+            </div>
+          </div>
+
+          <div class="home-wish-content">
+            <p>
+              健康寶寶挑戰已經完成了 ♡<br />
+              這張願望券可以隨時重新下載。
+            </p>
+
+            <button
+              id="home-wish-download"
+              class="home-wish-button"
+              type="button"
+            >
+              重新下載願望券 🎟️
+            </button>
+
+            <div
+              id="home-wish-message"
+              class="home-wish-message"
+              aria-live="polite"
+            ></div>
+          </div>
+        </section>
+        <!-- =========================
+           Little Note
+        ========================== -->
+
+        <section class="home-note">
+          <span>✦</span>
+
+          <p>
+            日子很普通，<br />
+            但因為是和你一起，就值得被記下來。
+          </p>
+
+          <span>✦</span>
+        </section>
+      </div>
+
+      <!-- =========================
+         Footer
+      ========================== -->
+
+      <footer class="site-footer">
+        <p>made for our little days ♡</p>
+      </footer>
+    </main>
+
+    <!-- =========================
+       JavaScript
+    ========================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="home.js"></script>
   </body>
 </html>

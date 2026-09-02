@@ -11,15 +11,25 @@
   </head>
 
   <body>
-    <main class="container diary-page">
+    <!-- ====================
+         💌 交換日記
+    ==================== -->
+
+    <main id="diary-app" class="container diary-page">
       <!-- ====================
            導覽
       ==================== -->
 
       <nav class="site-nav">
-        <a href="index.html" class="site-nav-link"> 🥬 健康寶寶 </a>
+        <a href="index.html" class="site-nav-link active"> 🏠 首頁 </a>
 
-        <a href="diary.html" class="site-nav-link active"> 💌 交換日記 </a>
+        <a href="challenge.html" class="site-nav-link"> 🥬 健康寶寶 </a>
+
+        <a href="diary.html" class="site-nav-link"> 💌 交換日記 </a>
+
+        <button id="logout-button" class="site-nav-logout" type="button">
+          ↪ 離開
+        </button>
       </nav>
 
       <!-- ====================
@@ -35,7 +45,7 @@
       </section>
 
       <!-- ====================
-           身份
+           👤 身份
       ==================== -->
 
       <section class="card diary-identity-card">
@@ -53,12 +63,13 @@
 
         <div class="diary-current-author">
           目前身份：
+
           <strong id="current-diary-author"> 💃 小朋友 </strong>
         </div>
       </section>
 
       <!-- ====================
-           寫日記
+           ✍️ 寫日記
       ==================== -->
 
       <section class="card diary-write-card">
@@ -68,8 +79,6 @@
 
         <div class="meal-subtitle">想說什麼、想記住什麼，都可以。</div>
 
-        <!-- 日記內容 -->
-
         <textarea
           id="diary-input"
           class="diary-input"
@@ -78,12 +87,13 @@
         ></textarea>
 
         <!-- ====================
-             心情
+             😌 心情
         ==================== -->
 
         <div class="diary-mood-section">
           <div class="diary-field-label">
             今天的心情
+
             <span> （選填） </span>
           </div>
 
@@ -115,7 +125,7 @@
         </div>
 
         <!-- ====================
-             照片
+             📷 照片
         ==================== -->
 
         <label class="diary-photo-box" for="diary-photo">
@@ -138,7 +148,7 @@
         />
 
         <!-- ====================
-             完成
+             儲存
         ==================== -->
 
         <button id="save-diary-button" class="complete-button" type="button">
@@ -181,6 +191,7 @@
 
         <div class="diary-calendar-hint">
           <span class="diary-calendar-dot"></span>
+
           有留下日記的日子
         </div>
       </section>
@@ -192,17 +203,44 @@
       <section id="diary-history" class="card diary-history-card">
         <div class="diary-empty">
           選一個日期，
+
           <br />
+
           看看那天留下了什麼 ❤️
         </div>
       </section>
 
       <!-- ====================
-           回首頁
+           ✨ 我們走過的日子
+           
+           只顯示已達成的里程碑
+           未達成的完全不顯示
+      ==================== -->
+
+      <section class="card diary-milestones-card" id="diary-milestones-card">
+        <div class="diary-milestones-header">
+          <div class="diary-milestones-icon">✨</div>
+
+          <div>
+            <div class="diary-milestones-label">OUR LITTLE STORY</div>
+
+            <h2>我們走過的日子</h2>
+          </div>
+        </div>
+
+        <p class="diary-milestones-intro">一篇一篇，慢慢留下屬於我們的故事。</p>
+
+        <div id="diary-achieved-milestones" class="diary-achieved-milestones">
+          <div class="diary-milestones-loading">正在整理我們的小日子…</div>
+        </div>
+      </section>
+
+      <!-- ====================
+           🏠 回首頁
       ==================== -->
 
       <div class="diary-home-link">
-        <a href="index.html"> ← 回到健康寶寶 </a>
+        <a href="index.html"> ← 回到我們的小日子 </a>
       </div>
     </main>
 
@@ -211,5 +249,6 @@
     ==================== -->
 
     <script src="diary.js"></script>
+    <script src="milestones.js"></script>
   </body>
 </html>
