@@ -1071,11 +1071,11 @@ function createDiaryElement(diary) {
     </div>
 
 
-    <div class="diary-content">
-
-      ${escapeHTML(String(diary.content || "").trim())}
-
-    </div>
+<div class="diary-content">${escapeHTML(
+    String(diary.content || "")
+      .trim()
+      .replace(/^[ \t]+/gm, ""),
+  )}</div>
 
 
     ${photoHTML}
