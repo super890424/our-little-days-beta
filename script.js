@@ -123,6 +123,7 @@ async function login() {
   if (!password) {
     alert("請輸入密碼");
     return;
+    開ㄕ;
   }
 
   if (loginButton) {
@@ -1013,16 +1014,36 @@ async function renderHistory() {
             </div>
           </div>
 
-          <div class="history-points">
+<div class="history-points">
 
-            +${meal.points} 點
+  <span>
+    +${meal.points} 點
+    ${taskIcons}
+  </span>
 
-            ${taskIcons}
+  <button
+    type="button"
+    class="meal-like-button ${meal.liked ? "liked" : ""}"
+    data-date="${meal.date}"
+    data-time="${meal.time}"
+    data-type="${meal.type}"
+    aria-label="按讚"
+  >
+    ${meal.liked ? "❤️" : "♡"}
+  </button>
 
-          </div>
+</div>
         `;
 
       history.appendChild(item);
+
+      const likeButton = item.querySelector(".meal-like-button");
+
+      if (likeButton) {
+        likeButton.addEventListener("click", function () {
+          toggleMealLike(meal, likeButton);
+        });
+      }
 
       const photoId = meal.photoId || meal.privatePhotoId || "";
 
@@ -1040,6 +1061,64 @@ async function renderHistory() {
 
       loadPrivatePhoto(photoId, item);
     });
+}
+
+// ==================================================
+// ❤️ 吃菜紀錄按讚
+// ==================================================
+
+async function toggleMealLike(meal, button) {
+  if (!button || button.disabled) {
+    return;
+  }
+
+  button.disabled = true;
+
+  const previousLiked = meal.liked === true;
+
+  // 先立即更新畫面
+  meal.liked = !previousLiked;
+
+  button.classList.toggle("liked", meal.liked);
+
+  button.textContent = meal.liked ? "❤️" : "♡";
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+
+      mode: "no-cors",
+
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+
+      body: JSON.stringify({
+        action: "toggleMealLike",
+
+        token: getToken(),
+
+        date: meal.date,
+
+        time: meal.time,
+
+        type: meal.type,
+      }),
+    });
+
+    console.log("❤️ 按讚已送出");
+  } catch (error) {
+    console.error("❤️ 按讚失敗：", error);
+
+    // 失敗就恢復原狀
+    meal.liked = previousLiked;
+
+    button.classList.toggle("liked", meal.liked);
+
+    button.textContent = meal.liked ? "❤️" : "♡";
+  } finally {
+    button.disabled = false;
+  }
 }
 
 // ==================================================
@@ -1209,6 +1288,11 @@ async function loadCloudData() {
 
         exercise: meal.exercise === true || meal.exercise === "TRUE",
 
+        liked:
+          meal.liked === true ||
+          meal.liked === "TRUE" ||
+          String(meal.liked) === "1",
+
         photoId: meal.photoId || meal.privatePhotoId || meal.photoUrl || "",
 
         privatePhotoId: meal.privatePhotoId || meal.photoId || "",
@@ -1226,7 +1310,7 @@ async function loadCloudData() {
       GOAL,
     );
 
-    await renderHistory();
+    renderHistory();
 
     updatePoints();
 

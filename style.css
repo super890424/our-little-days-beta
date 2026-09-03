@@ -4079,3 +4079,42 @@ img {
 .wish-close-button:hover {
   color: #333;
 }
+
+/* ==================================================
+   ❤️ 吃菜紀錄按讚
+   ================================================== */
+
+.meal-like-button {
+  border: none;
+  background: transparent;
+  padding: 4px 6px;
+  margin-left: auto;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.55;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.meal-like-button:hover {
+  transform: scale(1.1);
+}
+
+.meal-like-button.liked {
+  opacity: 1;
+}
+
+.meal-like-button:active {
+  transform: scale(1.2);
+}
+
+.meal-like-button:disabled {
+  cursor: default;
+}
+.history-points {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
