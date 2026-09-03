@@ -121,10 +121,7 @@ async function login() {
   const password = loginPassword ? loginPassword.value.trim() : "";
 
   if (!password) {
-    if (loginMessage) {
-      loginMessage.textContent = "請輸入密碼 🔐";
-    }
-
+    alert("請輸入密碼");
     return;
   }
 
@@ -133,15 +130,10 @@ async function login() {
     loginButton.textContent = "登入中…";
   }
 
-  if (loginMessage) {
-    loginMessage.textContent = "";
-  }
-
   try {
     // ==================================================
-    // 1. Health Baby 登入 Challenge
+    // 1. 取得 Health Baby Login Challenge
     // ==================================================
-
     const challengeResponse = await fetch(
       API_URL + "?action=loginChallenge&t=" + Date.now(),
     );
@@ -157,15 +149,13 @@ async function login() {
     }
 
     // ==================================================
-    // 2. 計算 Health Proof
+    // 2. 產生登入 proof
     // ==================================================
-
     const proof = await sha256(password + ":" + challenge.nonce);
 
     // ==================================================
-    // 3. Health Login
+    // 3. Health Baby Login
     // ==================================================
-
     const query = new URLSearchParams();
 
     query.set("action", "login");
@@ -177,7 +167,7 @@ async function login() {
     );
 
     if (!response.ok) {
-      throw new Error("登入請求失敗");
+      throw new Error("登入服務無回應");
     }
 
     const result = await response.json();
@@ -187,65 +177,13 @@ async function login() {
     }
 
     // ==================================================
-    // 4. 儲存 Health Token
+    // 4. 儲存登入 Token
     // ==================================================
-
     saveToken(result.token);
 
     // ==================================================
-    // 5. 嘗試取得 Diary Token
-    //
-    // Diary 使用另一組 Token。
-    // 如果後端目前仍是分開登入，
-    // 這裡一起取得，之後就不需要
-    // 在 diary.html 再出現登入畫面。
+    // 5. 登入成功
     // ==================================================
-
-    try {
-      const diaryChallengeResponse = await fetch(
-        API_URL + "?action=diaryChallenge&t=" + Date.now(),
-      );
-
-      if (diaryChallengeResponse.ok) {
-        const diaryChallenge = await diaryChallengeResponse.json();
-
-        if (diaryChallenge.success && diaryChallenge.nonce) {
-          const diaryProof = await sha256(
-            password + ":" + diaryChallenge.nonce,
-          );
-
-          const diaryResponse = await fetch(API_URL, {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "text/plain;charset=utf-8",
-            },
-
-            body: JSON.stringify({
-              action: "diaryLogin",
-
-              nonce: diaryChallenge.nonce,
-
-              proof: diaryProof,
-            }),
-          });
-
-          const diaryResult = await diaryResponse.json();
-
-          if (diaryResult.success && diaryResult.token) {
-            sessionStorage.setItem(DIARY_TOKEN_KEY, diaryResult.token);
-          }
-        }
-      }
-    } catch (diaryError) {
-      // Diary 登入失敗不影響 Health Baby
-      console.warn("Diary Token 取得失敗：", diaryError);
-    }
-
-    // ==================================================
-    // 6. 登入成功
-    // ==================================================
-
     if (loginScreen) {
       loginScreen.classList.add("hidden");
     }
@@ -258,26 +196,20 @@ async function login() {
       app.classList.remove("hidden");
     }
 
-    // 首頁不需要載入 Health 資料
+    // 如果現在就是首頁，就不要再初始化挑戰
     if (isHomePage) {
       return;
     }
 
-    // Challenge 才初始化 Health
     await initializeChallenge();
   } catch (error) {
     console.error("登入失敗：", error);
 
-    clearToken();
-
-    if (loginMessage) {
-      loginMessage.textContent = "密碼錯誤或登入失敗，請再試一次 🔐";
-    }
+    alert(error.message || "登入失敗，請稍後再試");
   } finally {
     if (loginButton) {
       loginButton.disabled = false;
-
-      loginButton.textContent = "進入我們的小日子 ♡";
+      loginButton.textContent = "登入";
     }
   }
 }

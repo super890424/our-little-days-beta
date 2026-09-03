@@ -329,23 +329,21 @@ async function downloadHomeWishVoucher() {
 }
 
 // ==========================================================
-// 🎟️ 讀取健康寶寶完成狀態
+// 🏠 首頁摘要
+// 一次取得：日記總數＋健康寶寶完成狀態
 // ==========================================================
 
-async function loadHomeWishVoucher() {
+async function loadHomeSummary() {
   const token = getHomeToken();
 
-  const section = document.getElementById("home-wish-voucher");
-
-  const button = document.getElementById("home-wish-download");
-
-  if (!token || !section || !button) {
+  if (!token) {
     return;
   }
 
   try {
     const query = new URLSearchParams();
 
+    query.set("action", "homeSummary");
     query.set("token", token);
     query.set("t", Date.now());
 
@@ -358,57 +356,34 @@ async function loadHomeWishVoucher() {
     const data = await response.json();
 
     if (!data.success) {
-      console.error("願望券狀態讀取失敗：", data.message);
+      console.error("首頁資料讀取失敗：", data.message);
 
       return;
     }
 
-    // 曾經完成過 45 分
-    if (data.challengeCompleted === true) {
+    // ======================================================
+    // 💌 日記總數
+    // ======================================================
+
+    const total = Number(data.diaryTotal) || 0;
+
+    renderHomeMilestones(total);
+
+    // ======================================================
+    // 🎟️ 健康寶寶完成狀態
+    // ======================================================
+
+    const section = document.getElementById("home-wish-voucher");
+
+    const button = document.getElementById("home-wish-download");
+
+    if (data.challengeCompleted === true && section && button) {
       section.classList.remove("hidden");
 
       button.addEventListener("click", downloadHomeWishVoucher);
     }
   } catch (error) {
-    console.error("首頁願望券狀態讀取失敗：", error);
-  }
-}
-
-// ==========================================================
-// 讀取日記總數
-// ==========================================================
-
-async function loadHomeDiaryStats() {
-  const token = getHomeToken();
-
-  if (!token) return;
-
-  try {
-    const query = new URLSearchParams();
-
-    query.set("action", "diaryIndex");
-    query.set("token", token);
-    query.set("t", Date.now());
-
-    const response = await fetch(HOME_API_URL + "?" + query.toString());
-
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      console.error("首頁日記資料讀取失敗：", data.message);
-
-      return;
-    }
-
-    const total = Number(data.total) || 0;
-
-    renderHomeMilestones(total);
-  } catch (error) {
-    console.error("首頁里程碑讀取失敗：", error);
+    console.error("首頁摘要讀取失敗：", error);
   }
 }
 
@@ -462,14 +437,14 @@ function renderHomeMilestones(total) {
   iconsElement.innerHTML = achieved
     .map(
       (milestone) => `
-          <span
-            class="home-milestone-achieved-icon"
-            title="${milestone.title}"
-            aria-label="${milestone.title}"
-          >
-            ${milestone.icon}
-          </span>
-        `,
+        <span
+          class="home-milestone-achieved-icon"
+          title="${milestone.title}"
+          aria-label="${milestone.title}"
+        >
+          ${milestone.icon}
+        </span>
+      `,
     )
     .join("");
 
@@ -502,8 +477,7 @@ function waitForHomeLogin() {
   // --------------------------------------------------------
 
   if (getHomeToken()) {
-    loadHomeDiaryStats();
-    loadHomeWishVoucher();
+    loadHomeSummary();
 
     return;
   }
@@ -516,8 +490,7 @@ function waitForHomeLogin() {
     if (getHomeToken() && loginScreen.classList.contains("hidden")) {
       observer.disconnect();
 
-      loadHomeDiaryStats();
-      loadHomeWishVoucher();
+      loadHomeSummary();
     }
   });
 
@@ -536,8 +509,7 @@ function waitForHomeLogin() {
 
       observer.disconnect();
 
-      loadHomeDiaryStats();
-      loadHomeWishVoucher();
+      loadHomeSummary();
     }
   }, 500);
 }
