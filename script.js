@@ -5,13 +5,13 @@
 const GOAL = 45;
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbwEJGlmngyKuU571HDdigsJUvqkUk6LsTwLAnIfj0bFah6LrUkdoLELZiRK9vN-GMlU/exec";
+  "https://script.google.com/macros/s/AKfycbyJApTP7NwsI_ecpAjst0IYZSK44pES3nWbLCyuLvreB4AmMwBXTPPnAxPf3KyxNu9bPA/exec";
 
 const USER_ID = "VEGGIE-BABY-001";
 
-const TOKEN_KEY = "veggie-baby-token";
+const TOKEN_KEY = "our-little-days-beta-token";
 
-const DIARY_TOKEN_KEY = "veggie-baby-diary-token";
+const DIARY_TOKEN_KEY = "our-little-days-beta-diary-token";
 
 // ==================================================
 // 判斷目前頁面
@@ -1485,8 +1485,7 @@ function fileToBase64(file) {
 
 async function markChallengeCompleted() {
   try {
-    const token = sessionStorage.getItem("veggie-baby-token");
-
+    const token = sessionStorage.getItem(TOKEN_KEY);
     if (!token) {
       console.error("挑戰完成同步失敗：沒有登入 Token");
       return false;

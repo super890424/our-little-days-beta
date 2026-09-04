@@ -3,9 +3,8 @@
 // ==========================================================
 
 const HOME_API_URL =
-  "https://script.google.com/macros/s/AKfycbwEJGlmngyKuU571HDdigsJUvqkUk6LsTwLAnIfj0bFah6LrUkdoLELZiRK9vN-GMlU/exec";
-
-const HOME_TOKEN_KEY = "veggie-baby-token";
+  "https://script.google.com/macros/s/AKfycbyJApTP7NwsI_ecpAjst0IYZSK44pES3nWbLCyuLvreB4AmMwBXTPPnAxPf3KyxNu9bPA/exec";
+const HOME_TOKEN_KEY = "our-little-days-beta-token";
 
 // ==========================================================
 // ✨ 里程碑

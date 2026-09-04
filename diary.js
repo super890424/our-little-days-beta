@@ -1,7 +1,7 @@
 // ==========================================================
 // 💌 Our Little Days｜交換日記
 //
-// 共用網站登入版
+// Beta 專用交換日記
 //
 // 登入由 index.html 統一處理
 // Diary 不再有自己的登入畫面
@@ -22,15 +22,16 @@
 // ==========================================================
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbwEJGlmngyKuU571HDdigsJUvqkUk6LsTwLAnIfj0bFah6LrUkdoLELZiRK9vN-GMlU/exec";
+  "https://script.google.com/macros/s/AKfycbyJApTP7NwsI_ecpAjst0IYZSK44pES3nWbLCyuLvreB4AmMwBXTPPnAxPf3KyxNu9bPA/exec";
 
 // ==========================================================
 // 🔐 共用登入 Token
 //
-// ⚠️ 這裡和 index.html / script.js 使用同一個 Token
+// Beta 專用
+// 和 Beta index.html / script.js 使用同一個 Token
 // ==========================================================
 
-const TOKEN_KEY = "veggie-baby-token";
+const TOKEN_KEY = "our-little-days-beta-token";
 
 let diaryAuthToken = sessionStorage.getItem(TOKEN_KEY) || "";
 
@@ -38,21 +39,29 @@ let diaryAuthToken = sessionStorage.getItem(TOKEN_KEY) || "";
 // 👤 身份
 // ==========================================================
 
-const DIARY_AUTHOR_KEY = "veggie-baby-diary-author";
+// Beta 專用身份儲存 Key
+const DIARY_AUTHOR_KEY = "our-little-days-beta-diary-author";
 
+// Beta 使用者身份
+//
+// 不再使用原版的 BIG / SMALL
+// 改成 USER_A / USER_B
+//
+// 這些代號會寫入 Beta Google Sheet 的 author 欄位
 const DIARY_AUTHORS = {
-  BIG: {
-    icon: "🐕",
-    name: "大朋友",
+  USER_A: {
+    icon: "💙",
+    name: "User-A",
   },
 
-  SMALL: {
-    icon: "💃",
-    name: "小朋友",
+  USER_B: {
+    icon: "💛",
+    name: "User-B",
   },
 };
 
-let currentDiaryAuthor = localStorage.getItem(DIARY_AUTHOR_KEY) || "SMALL";
+// Beta 預設身份
+let currentDiaryAuthor = localStorage.getItem(DIARY_AUTHOR_KEY) || "USER_B";
 
 // ==========================================================
 // 📖 日記資料
@@ -346,7 +355,7 @@ function updateIdentityUI() {
     );
   });
 
-  const author = DIARY_AUTHORS[currentDiaryAuthor] || DIARY_AUTHORS.SMALL;
+  const author = DIARY_AUTHORS[currentDiaryAuthor] || DIARY_AUTHORS.USER_B;
 
   const currentAuthor = document.getElementById("current-diary-author");
 
@@ -503,10 +512,6 @@ async function submitDiary() {
     }
 
     const date = formatDate(new Date());
-
-    // --------------------------------------------------
-    // 取得送出前篇數
-    // --------------------------------------------------
 
     // --------------------------------------------------
     // 送出
@@ -876,7 +881,7 @@ function createDiaryElement(diary) {
 
   article.dataset.diaryId = String(diary.id);
 
-  const author = DIARY_AUTHORS[diary.author] || DIARY_AUTHORS.SMALL;
+  const author = DIARY_AUTHORS[diary.author] || DIARY_AUTHORS.USER_B;
 
   const isMyDiary = diary.author === currentDiaryAuthor;
 
@@ -947,7 +952,7 @@ function createDiaryElement(diary) {
   let repliesHTML = "";
 
   diaryReplies.forEach(function (reply) {
-    const replyAuthor = DIARY_AUTHORS[reply.author] || DIARY_AUTHORS.SMALL;
+    const replyAuthor = DIARY_AUTHORS[reply.author] || DIARY_AUTHORS.USER_B;
 
     repliesHTML += `
 
@@ -1444,11 +1449,7 @@ function fileToBase64(file) {
         let height = image.height;
 
         if (width > maxWidth || height > maxHeight) {
-          const ratio = Math.min(
-            maxWidth / width,
-
-            maxHeight / height,
-          );
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
 
           width = Math.round(width * ratio);
 
